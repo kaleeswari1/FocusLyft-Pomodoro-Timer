@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="text-center mb-4">
+            <h1 class="display-4 mb-3">Pomodoro Timer</h1>
+            <div class="mode-indicator mb-3">
+                <span id="currentMode" class="badge bg-primary fs-5">Work Time</span>
+            </div>
+            <div class="timer-display mb-4">
+                <span id="minutes" class="display-1">25</span>
+                <span class="display-1">:</span>
+                <span id="seconds" class="display-1">00</span>
+            </div>
+            
+            <div class="progress mb-4" style="height: 10px;">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 100%"></div>
+            </div>
+
+            <div class="session-counter mb-3">
+                Session: <span id="sessionCount">0</span>
+            </div>
+
+            <div class="controls">
+                <button id="startBtn" class="btn btn-success btn-lg me-2">Start</button>
+                <button id="pauseBtn" class="btn btn-warning btn-lg me-2" disabled>Pause</button>
+                <button id="resetBtn" class="btn btn-danger btn-lg">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
+</body>
+</html>
