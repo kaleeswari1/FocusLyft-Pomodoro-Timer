@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center">
-        <div class="text-center mb-4">
+    <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-4">
+        <div class="text-center mb-4 w-100">
             <h1 class="display-4 mb-3">Pomodoro Timer</h1>
+
+            <!-- Exam Notification Area -->
+            <div id="examNotification" class="mb-4"></div>
 
             <!-- Timer Settings -->
             <div class="timer-settings mb-4">
@@ -46,15 +50,41 @@
                 Session: <span id="sessionCount">0</span>
             </div>
 
-            <div class="controls">
+            <div class="controls mb-4">
                 <button id="startBtn" class="btn btn-success btn-lg me-2">Start</button>
                 <button id="pauseBtn" class="btn btn-warning btn-lg me-2" disabled>Pause</button>
                 <button id="resetBtn" class="btn btn-danger btn-lg">Reset</button>
+            </div>
+
+            <!-- Exam Management Section -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Manage Exams</h5>
+                </div>
+                <div class="card-body">
+                    <form id="examForm" class="mb-3">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="examSubject" placeholder="Exam Subject" required>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" id="examDate" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">Add</button>
+                            </div>
+                        </div>
+                    </form>
+                    <ul id="examList" class="list-group">
+                        <!-- Exam items will be added here dynamically -->
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/exams.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
 </body>
 </html>

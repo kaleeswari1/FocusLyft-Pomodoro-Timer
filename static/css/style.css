@@ -18,14 +18,34 @@ button:focus {
     outline-offset: 2px;
 }
 
+/* Exam management styles */
+.card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#examList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#examNotification {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 576px) {
     .timer-display {
         font-size: 3rem;
     }
-    
+
     .controls button {
         min-width: 80px;
         margin-bottom: 10px;
+    }
+
+    .card {
+        margin: 0 10px;
     }
 }
