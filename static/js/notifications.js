@@ -39,6 +39,11 @@ class NotificationManager {
                     console.log("Focus mode not supported");
                 }
             }
+            
+            // Also disable audio notifications
+            if (window.audioManager) {
+                window.audioManager.setNotificationsEnabled(false);
+            }
         }
     }
 
@@ -56,6 +61,11 @@ class NotificationManager {
                 body: "Notifications are now enabled",
                 icon: "/static/images/break-icon.svg"
             });
+        }
+        
+        // Re-enable audio notifications
+        if (window.audioManager) {
+            window.audioManager.setNotificationsEnabled(true);
         }
     }
 
@@ -112,3 +122,29 @@ class NotificationManager {
 }
 
 const notificationManager = new NotificationManager();
+
+// Handle notification toggle
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('toggleNotifications');
+    const focusStatus = document.getElementById('focusStatus');
+    let notificationsBlocked = false;
+
+    toggleBtn.addEventListener('click', async () => {
+        if (notificationsBlocked) {
+            // Unblock notifications
+            await notificationManager.unblockNotifications();
+            toggleBtn.innerHTML = '<i class="fas fa-bell"></i> Block Notifications';
+            toggleBtn.classList.remove('btn-danger');
+            toggleBtn.classList.add('btn-outline-secondary');
+            focusStatus.classList.add('d-none');
+        } else {
+            // Block notifications
+            await notificationManager.blockNotifications();
+            toggleBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Unblock Notifications';
+            toggleBtn.classList.remove('btn-outline-secondary');
+            toggleBtn.classList.add('btn-danger');
+            focusStatus.classList.remove('d-none');
+        }
+        notificationsBlocked = !notificationsBlocked;
+    });
+});

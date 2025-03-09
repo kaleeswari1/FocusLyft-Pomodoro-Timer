@@ -1,7 +1,10 @@
-class AudioManager {
+// Create global audio manager
+window.AudioManager = // Create global audio manager
+window.AudioManager = class AudioManager {
     constructor() {
         this.audioContext = null;
         this.initialize();
+        this.notificationsEnabled = true;
     }
 
     initialize() {
@@ -9,8 +12,15 @@ class AudioManager {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioContext = new AudioContext();
     }
+    
+    setNotificationsEnabled(enabled) {
+        this.notificationsEnabled = enabled;
+    }
 
     async playNotification(type) {
+        // Don't play sounds if notifications are disabled
+        if (!this.notificationsEnabled) return;
+        
         if (!this.audioContext) {
             this.initialize();
         }
@@ -53,3 +63,5 @@ class AudioManager {
 }
 
 const audioManager = new AudioManager();
+// Create global instance
+window.audioManager = new window.AudioManager();
