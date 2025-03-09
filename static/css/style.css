@@ -115,3 +115,33 @@ button:focus {
         flex-direction: column;
     }
 }
+
+/* Add any additional custom styles here */
+
+/* Todo list styles */
+.task-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.list-group-item {
+    transition: background-color 0.3s;
+}
+
+.list-group-item:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+#taskList .form-check-label {
+    word-break: break-word;
+}
+
+/* Add animation for reminder pop-ups */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.notification {
+    animation: popIn 0.3s ease-out forwards;
+}
