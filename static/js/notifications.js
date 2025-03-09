@@ -29,6 +29,11 @@ class NotificationManager {
         // Set the block state
         this.notificationsBlocked = true;
         
+        // Cancel any scheduled task reminders
+        if (window.todoManager) {
+            window.todoManager.scheduleReminders();
+        }
+        
         if (this.hasPermission) {
             // Create a focus notification before blocking
             new Notification("Focus Mode Activated", {
@@ -81,6 +86,11 @@ class NotificationManager {
         // Restore original Notification if it was overridden
         if (window.Notification && window.Notification._original) {
             window.Notification = window.Notification._original;
+        }
+        
+        // Re-schedule task reminders
+        if (window.todoManager) {
+            window.todoManager.scheduleReminders();
         }
         
         if ('Focus' in window) {

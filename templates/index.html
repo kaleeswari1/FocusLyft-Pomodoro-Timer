@@ -71,6 +71,42 @@
                 <button id="resetBtn" class="btn btn-danger btn-lg">Reset</button>
             </div>
 
+            <!-- Task Management Section -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Task Manager</h5>
+                </div>
+                <div class="card-body">
+                    <form id="todoForm" class="mb-3" data-edit-mode="false">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="taskTitle" placeholder="Task Title" required>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" id="taskPriority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="datetime-local" class="form-control" id="taskDueDate">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-plus"></i> Add Task
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="task-container">
+                        <ul id="taskList" class="list-group">
+                            <!-- Task items will be added here dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Exam Management Section -->
             <div class="card mt-4">
                 <div class="card-header">
@@ -101,6 +137,7 @@
     <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     <script src="{{ url_for('static', filename='js/exams.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/todo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
 </body>
 </html>
