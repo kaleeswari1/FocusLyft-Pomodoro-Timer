@@ -1,3 +1,4 @@
+
 class NotificationManager {
     constructor() {
         this.hasPermission = false;
@@ -78,7 +79,9 @@ class NotificationManager {
                 body: `${minutes} minutes left in your study session!`,
                 icon: "/static/images/focus-icon.svg"
             });
-            audioManager.playNotification('reminder');
+            if (window.audioManager) {
+                window.audioManager.playNotification('reminder');
+            }
         }, (minutes - 5) * 60 * 1000); // Notify 5 minutes before end
 
         this.reminderIntervals.push(reminder);
@@ -92,7 +95,9 @@ class NotificationManager {
                 body: `Break time ends in 2 minutes!`,
                 icon: "/static/images/break-icon.svg"
             });
-            audioManager.playNotification('break');
+            if (window.audioManager) {
+                window.audioManager.playNotification('break');
+            }
         }, (minutes - 2) * 60 * 1000); // Notify 2 minutes before break ends
 
         this.reminderIntervals.push(reminder);
@@ -111,7 +116,9 @@ class NotificationManager {
                 body: `Your ${exam.subject} exam is in ${daysUntilExam} days!`,
                 icon: "/static/images/focus-icon.svg"
             });
-            audioManager.playNotification('reminder');
+            if (window.audioManager) {
+                window.audioManager.playNotification('reminder');
+            }
         }
     }
 
@@ -123,28 +130,32 @@ class NotificationManager {
 
 const notificationManager = new NotificationManager();
 
-// Handle notification toggle
+// Handle notification toggle - but safely check for elements first
 document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggleNotifications');
     const focusStatus = document.getElementById('focusStatus');
-    let notificationsBlocked = false;
+    
+    // Only set up the event listener if the elements exist
+    if (toggleBtn && focusStatus) {
+        let notificationsBlocked = false;
 
-    toggleBtn.addEventListener('click', async () => {
-        if (notificationsBlocked) {
-            // Unblock notifications
-            await notificationManager.unblockNotifications();
-            toggleBtn.innerHTML = '<i class="fas fa-bell"></i> Block Notifications';
-            toggleBtn.classList.remove('btn-danger');
-            toggleBtn.classList.add('btn-outline-secondary');
-            focusStatus.classList.add('d-none');
-        } else {
-            // Block notifications
-            await notificationManager.blockNotifications();
-            toggleBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Unblock Notifications';
-            toggleBtn.classList.remove('btn-outline-secondary');
-            toggleBtn.classList.add('btn-danger');
-            focusStatus.classList.remove('d-none');
-        }
-        notificationsBlocked = !notificationsBlocked;
-    });
+        toggleBtn.addEventListener('click', async () => {
+            if (notificationsBlocked) {
+                // Unblock notifications
+                await notificationManager.unblockNotifications();
+                toggleBtn.innerHTML = '<i class="fas fa-bell"></i> Block Notifications';
+                toggleBtn.classList.remove('btn-danger');
+                toggleBtn.classList.add('btn-outline-secondary');
+                focusStatus.classList.add('d-none');
+            } else {
+                // Block notifications
+                await notificationManager.blockNotifications();
+                toggleBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Unblock Notifications';
+                toggleBtn.classList.remove('btn-outline-secondary');
+                toggleBtn.classList.add('btn-danger');
+                focusStatus.classList.remove('d-none');
+            }
+            notificationsBlocked = !notificationsBlocked;
+        });
+    }
 });

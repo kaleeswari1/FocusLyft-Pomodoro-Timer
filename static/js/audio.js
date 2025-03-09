@@ -1,5 +1,5 @@
+
 // Create global audio manager
-window.AudioManager = // Create global audio manager
 window.AudioManager = class AudioManager {
     constructor() {
         this.audioContext = null;
@@ -31,37 +31,37 @@ window.AudioManager = class AudioManager {
         oscillator.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
 
-        // Different sounds for different events
+        // Different sound patterns for different notification types
         switch(type) {
             case 'work':
-                oscillator.frequency.setValueAtTime(880, this.audioContext.currentTime); // A5
+                oscillator.frequency.value = 440; // A4
+                gainNode.gain.value = 0.5;
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 500);
                 break;
             case 'break':
-                oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime); // A4
-                break;
-            case 'reward':
-                // Play a happy reward melody
-                const now = this.audioContext.currentTime;
-                oscillator.frequency.setValueAtTime(523.25, now); // C5
-                oscillator.frequency.setValueAtTime(659.25, now + 0.2); // E5
-                oscillator.frequency.setValueAtTime(783.99, now + 0.4); // G5
+                oscillator.frequency.value = 523.25; // C5
+                gainNode.gain.value = 0.4;
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 300);
                 break;
             case 'reminder':
-                // Gentle reminder sound
-                const reminderTime = this.audioContext.currentTime;
-                oscillator.frequency.setValueAtTime(587.33, reminderTime); // D5
-                oscillator.frequency.setValueAtTime(739.99, reminderTime + 0.2); // F#5
+                oscillator.frequency.value = 349.23; // F4
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.frequency.value = 392.00; // G4
+                    setTimeout(() => oscillator.stop(), 300);
+                }, 300);
                 break;
+            default:
+                oscillator.frequency.value = 440;
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 200);
         }
-
-        gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 1);
-
-        oscillator.start();
-        oscillator.stop(this.audioContext.currentTime + (type === 'reward' || type === 'reminder' ? 1.5 : 1));
     }
 }
 
-const audioManager = new AudioManager();
 // Create global instance
 window.audioManager = new window.AudioManager();
