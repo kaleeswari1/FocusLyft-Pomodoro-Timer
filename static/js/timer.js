@@ -16,6 +16,7 @@ class PomodoroTimer {
         this.pauseCount = 0;
         this.totalPauseTime = 0;
         this.lastPauseTime = null;
+        this.rewardMessage = document.getElementById('rewardMessage'); // Added for reward message
 
         // Initialize timer values
         this.workTime = this.getWorkDuration();
@@ -134,9 +135,11 @@ class PomodoroTimer {
     }
 
     handleTimerComplete() {
-        audioManager.playNotification(this.isWorkMode ? 'work' : 'break');
-
         if (this.isWorkMode) {
+            // Play reward sound and show celebration when work session is completed
+            audioManager.playNotification('reward');
+            this.showReward();
+
             // Reset pause statistics on successful completion of work session
             this.pauseCount = 0;
             this.totalPauseTime = 0;
@@ -147,12 +150,39 @@ class PomodoroTimer {
             this.currentTime = this.breakTime;
             this.isWorkMode = false;
         } else {
+            audioManager.playNotification('break');
             this.currentTime = this.workTime;
             this.isWorkMode = true;
         }
 
         this.updateModeIndicator();
         this.updateStats();
+    }
+
+    showReward() {
+        // Trigger confetti animation
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        // Show motivational message
+        const messages = [
+            "Great work! 🌟",
+            "You're crushing it! 💪",
+            "Keep up the momentum! 🚀",
+            "Excellent focus! 🎯",
+            "Amazing progress! ⭐"
+        ];
+
+        this.rewardMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+        this.rewardMessage.classList.add('show');
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+            this.rewardMessage.classList.remove('show');
+        }, 3000);
     }
 
     updateDisplay() {

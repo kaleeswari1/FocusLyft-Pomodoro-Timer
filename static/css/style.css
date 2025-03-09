@@ -34,6 +34,19 @@ button:focus {
     margin: 0 auto;
 }
 
+/* Reward message styles */
+.reward-message {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--bs-success);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.reward-message.show {
+    opacity: 1;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 576px) {
     .timer-display {
