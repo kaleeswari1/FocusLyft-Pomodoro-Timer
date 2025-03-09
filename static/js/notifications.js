@@ -139,7 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (toggleBtn && focusStatus) {
         let notificationsBlocked = false;
 
-        toggleBtn.addEventListener('click', async () => {
+        // Ensure the DOM is fully loaded
+        setTimeout(() => {
+            toggleBtn.addEventListener('click', async () => {
             if (notificationsBlocked) {
                 // Unblock notifications
                 await notificationManager.unblockNotifications();
@@ -156,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 focusStatus.classList.remove('d-none');
             }
             notificationsBlocked = !notificationsBlocked;
-        });
+            });
+        }, 100); // Small delay to ensure DOM is fully ready
     }
 });
