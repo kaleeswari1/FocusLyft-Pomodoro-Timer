@@ -66,7 +66,7 @@ class TodoManager {
             this.scheduleReminders();
         }
     }
-
+    
     editTask(taskId) {
         const task = this.tasks.find(task => task.id === Number(taskId));
         if (!task) return;
@@ -102,7 +102,7 @@ class TodoManager {
         // Focus on title input
         taskTitleInput.focus();
     }
-
+    
     updateTaskList() {
         const taskList = document.getElementById('taskList');
         if (!taskList) return;
@@ -144,67 +144,83 @@ class TodoManager {
             const leftSide = document.createElement('div');
             leftSide.className = 'd-flex align-items-center flex-grow-1';
             
-            // Create checkbox
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'form-check-input me-3';
-            checkbox.checked = task.completed;
-            checkbox.addEventListener('change', () => this.toggleTaskCompletion(task.id));
+            // Create completion checkbox
+            const checkDiv = document.createElement('div');
+            checkDiv.className = 'form-check me-3';
             
-            // Create task title with priority badge
-            const titleSpan = document.createElement('span');
-            titleSpan.className = 'form-check-label';
+            const checkbox = document.createElement('input');
+            checkbox.className = 'form-check-input';
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.id = `task-${task.id}`;
+            checkbox.addEventListener('change', () => {
+                this.toggleTaskCompletion(task.id);
+            });
+            
+            const label = document.createElement('label');
+            label.className = 'form-check-label';
+            label.htmlFor = `task-${task.id}`;
+            label.textContent = task.title;
+            
             if (task.completed) {
-                titleSpan.innerHTML = `<s>${task.title}</s>`;
-            } else {
-                titleSpan.textContent = task.title;
+                label.style.textDecoration = 'line-through';
+                label.style.color = '#6c757d';
             }
             
-            // Add priority badge
-            const priorityBadge = document.createElement('span');
-            priorityBadge.className = `badge ms-2 ${
-                task.priority === 'high' ? 'bg-danger' :
-                task.priority === 'medium' ? 'bg-warning' : 'bg-info'
-            }`;
-            priorityBadge.textContent = task.priority;
-            titleSpan.appendChild(priorityBadge);
+            checkDiv.appendChild(checkbox);
+            checkDiv.appendChild(label);
+            leftSide.appendChild(checkDiv);
             
-            // Add due date if it exists
-            if (task.dueDate) {
-                const dueDate = new Date(task.dueDate);
-                const dateStr = dueDate.toLocaleDateString();
-                const timeStr = dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Task metadata (due date and priority)
+            if (task.dueDate || task.priority) {
+                const metaDiv = document.createElement('div');
+                metaDiv.className = 'ms-3 d-flex flex-column';
                 
-                const dueDateSpan = document.createElement('small');
-                dueDateSpan.className = 'ms-2 text-muted';
-                
-                // Check if overdue
-                if (!task.completed && dueDate < now) {
-                    dueDateSpan.className = 'ms-2 task-overdue';
-                    dueDateSpan.innerHTML = `<i class="fas fa-exclamation-circle"></i> Due: ${dateStr} ${timeStr}`;
-                } else {
-                    dueDateSpan.textContent = `Due: ${dateStr} ${timeStr}`;
+                if (task.dueDate) {
+                    const dueDate = new Date(task.dueDate);
+                    const dueDateElement = document.createElement('small');
+                    dueDateElement.textContent = `Due: ${dueDate.toLocaleString()}`;
+                    
+                    // Mark as overdue if past due date
+                    if (dueDate < now && !task.completed) {
+                        dueDateElement.className = 'task-overdue';
+                    }
+                    
+                    metaDiv.appendChild(dueDateElement);
                 }
                 
-                titleSpan.appendChild(dueDateSpan);
+                if (task.priority) {
+                    const priorityElement = document.createElement('small');
+                    const priorityColors = {
+                        high: 'danger',
+                        medium: 'warning',
+                        low: 'info'
+                    };
+                    
+                    priorityElement.className = `badge text-bg-${priorityColors[task.priority]}`;
+                    priorityElement.textContent = `${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} priority`;
+                    metaDiv.appendChild(priorityElement);
+                }
+                
+                leftSide.appendChild(metaDiv);
             }
             
-            // Add elements to left side
-            leftSide.appendChild(checkbox);
-            leftSide.appendChild(titleSpan);
-            
-            // Create action buttons
+            // Action buttons
             const actionDiv = document.createElement('div');
             actionDiv.className = 'task-actions';
             
             const editBtn = document.createElement('button');
-            editBtn.className = 'btn btn-sm btn-outline-primary me-1';
+            editBtn.className = 'btn btn-sm btn-outline-primary me-2';
             editBtn.innerHTML = '<i class="fas fa-edit"></i>';
-            editBtn.addEventListener('click', () => this.editTask(task.id));
+            editBtn.title = 'Edit task';
+            editBtn.addEventListener('click', () => {
+                this.editTask(task.id);
+            });
             
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'btn btn-sm btn-outline-danger';
             deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.title = 'Delete task';
             deleteBtn.addEventListener('click', () => {
                 if (confirm('Are you sure you want to delete this task?')) {
                     this.deleteTask(task.id);
@@ -254,59 +270,51 @@ class TodoManager {
                 24 * 60 * 60 * 1000 // 1 day before
             ];
             
-            reminderTimes.forEach(time => {
-                if (timeUntilDue > time) {
-                    const reminderTime = timeUntilDue - time;
-                    const minutesLabel = time === 15 * 60 * 1000 ? '15 minutes' : 
-                                        time === 60 * 60 * 1000 ? '1 hour' : '1 day';
+            reminderTimes.forEach(reminderTime => {
+                if (timeUntilDue > reminderTime) {
+                    const delay = timeUntilDue - reminderTime;
+                    let timeText = '';
                     
-                    const reminder = setTimeout(() => {
-                        this.showReminder(task, minutesLabel);
-                    }, reminderTime);
+                    if (reminderTime === 15 * 60 * 1000) timeText = '15 minutes';
+                    else if (reminderTime === 60 * 60 * 1000) timeText = '1 hour';
+                    else if (reminderTime === 24 * 60 * 60 * 1000) timeText = '1 day';
                     
-                    window.taskReminders.push(reminder);
+                    const timerId = setTimeout(() => {
+                        // Check if the task is still incomplete
+                        const currentTask = this.tasks.find(t => t.id === task.id);
+                        if (currentTask && !currentTask.completed) {
+                            this.showTaskReminder(task, timeText);
+                        }
+                    }, delay);
+                    
+                    window.taskReminders.push(timerId);
                 }
             });
         });
     }
     
-    showReminder(task, timeLabel) {
-        if (!window.notificationManager || window.notificationManager.notificationsBlocked) {
-            return;
-        }
-        
-        // Show native notification if permission granted
+    showTaskReminder(task, timeText) {
+        // Show desktop notification if permission granted
         if (Notification.permission === 'granted') {
-            const notification = new Notification('Task Reminder', {
-                body: `"${task.title}" is due in ${timeLabel}`,
-                icon: '/static/images/favicon.png'
+            const notification = new Notification(`Task Reminder: ${task.title}`, {
+                body: `Your task is due in ${timeText}.`,
+                icon: '/static/images/favicon.ico'
             });
             
-            notification.onclick = () => {
-                window.focus();
-            };
+            // Close notification after 10 seconds
+            setTimeout(() => notification.close(), 10000);
         }
         
         // Also show in-app notification
-        const container = document.createElement('div');
-        container.className = 'alert alert-warning alert-dismissible fade show notification';
-        container.innerHTML = `
-            <strong>Reminder:</strong> "${task.title}" is due in ${timeLabel}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-        
-        // Insert at top of task list section
-        const taskSection = document.querySelector('.task-container');
-        if (taskSection) {
-            taskSection.insertAdjacentElement('beforebegin', container);
-            
-            // Auto-remove after 10 seconds
-            setTimeout(() => {
-                container.remove();
-            }, 10000);
+        if (window.notificationManager) {
+            window.notificationManager.showNotification(
+                'Task Reminder', 
+                `"${task.title}" is due in ${timeText}.`,
+                'warning'
+            );
         }
     }
-
+    
     initializeUI() {
         const todoForm = document.getElementById('todoForm');
         if (todoForm) {
@@ -341,7 +349,7 @@ class TodoManager {
         } else {
             console.warn('Todo form element not found');
         }
-
+        
         // Check for notification permission
         if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
             Notification.requestPermission();
@@ -352,5 +360,7 @@ class TodoManager {
     }
 }
 
-// Create a global instance
-window.todoManager = new TodoManager();
+// Create a global instance and ensure it's loaded properly
+document.addEventListener('DOMContentLoaded', () => {
+    window.todoManager = new TodoManager();
+});

@@ -1,4 +1,3 @@
-
 class NotificationManager {
     constructor() {
         this.hasPermission = false;
@@ -28,12 +27,12 @@ class NotificationManager {
 
         // Set the block state
         this.notificationsBlocked = true;
-        
+
         // Cancel any scheduled task reminders
         if (window.todoManager && typeof window.todoManager.scheduleReminders === 'function') {
             window.todoManager.scheduleReminders();
         }
-        
+
         if (this.hasPermission) {
             // Create a focus notification before blocking
             new Notification("Focus Mode Activated", {
@@ -49,7 +48,7 @@ class NotificationManager {
                     console.log("Focus mode not supported");
                 }
             }
-            
+
             // Override the native Notification constructor to block all notifications
             const originalNotification = window.Notification;
             window.Notification = function(title, options) {
@@ -61,17 +60,17 @@ class NotificationManager {
                 }
                 return new originalNotification(title, options);
             };
-            
+
             // Copy properties from the original Notification
             for (let prop in originalNotification) {
                 if (originalNotification.hasOwnProperty(prop)) {
                     window.Notification[prop] = originalNotification[prop];
                 }
             }
-            
+
             // Store original for later restoration
             window.Notification._original = originalNotification;
-            
+
             // Also disable audio notifications
             if (window.audioManager) {
                 window.audioManager.setNotificationsEnabled(false);
@@ -82,17 +81,17 @@ class NotificationManager {
     async unblockNotifications() {
         // Reset the block state
         this.notificationsBlocked = false;
-        
+
         // Restore original Notification if it was overridden
         if (window.Notification && window.Notification._original) {
             window.Notification = window.Notification._original;
         }
-        
+
         // Re-schedule task reminders
         if (window.todoManager) {
             window.todoManager.scheduleReminders();
         }
-        
+
         if ('Focus' in window) {
             try {
                 await window.Focus.release();
@@ -107,7 +106,7 @@ class NotificationManager {
                 icon: "/static/images/break-icon.svg"
             });
         }
-        
+
         // Re-enable audio notifications
         if (window.audioManager) {
             window.audioManager.setNotificationsEnabled(true);
@@ -170,16 +169,44 @@ class NotificationManager {
         this.reminderIntervals.forEach(interval => clearTimeout(interval));
         this.reminderIntervals = [];
     }
+
+    // Add a method to show in-app notifications
+    showNotification(title, message, type = 'info', duration = 5000) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} notification`;
+        notification.innerHTML = `
+            <strong>${title}</strong>
+            <p>${message}</p>
+        `;
+
+        // Add to DOM
+        const container = document.getElementById('examNotification');
+        if (container) {
+            container.appendChild(notification);
+
+            // Remove after duration
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, duration);
+        }
+    }
 }
 
+// Create a global notificationManager instance
 const notificationManager = new NotificationManager();
+window.notificationManager = notificationManager;
 
-// Wait for DOM to be fully loaded before accessing elements
+// Initialize notification controls when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Handle notification toggle
+    // Find notification toggle and status elements
     const toggleBtn = document.getElementById('toggleNotifications');
     const focusStatus = document.getElementById('focusStatus');
-    
+
+    // Only add event listeners if elements exist
     if (toggleBtn && focusStatus) {
         toggleBtn.addEventListener('click', async () => {
             if (notificationManager.notificationsBlocked) {
