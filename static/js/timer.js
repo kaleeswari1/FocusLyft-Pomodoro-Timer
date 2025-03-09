@@ -12,6 +12,11 @@ class PomodoroTimer {
         this.workDurationInput = document.getElementById('workDuration');
         this.breakDurationInput = document.getElementById('breakDuration');
 
+        // Add new tracking variables
+        this.pauseCount = 0;
+        this.totalPauseTime = 0;
+        this.lastPauseTime = null;
+
         // Initialize timer values
         this.workTime = this.getWorkDuration();
         this.breakTime = this.getBreakDuration();
@@ -23,6 +28,7 @@ class PomodoroTimer {
 
         this.initializeEventListeners();
         this.updateDisplay();
+        this.updateStats();
     }
 
     getWorkDuration() {
@@ -66,6 +72,12 @@ class PomodoroTimer {
 
     start() {
         if (!this.isRunning) {
+            // Calculate pause duration if resuming from pause
+            if (this.lastPauseTime) {
+                this.totalPauseTime += Math.floor((Date.now() - this.lastPauseTime) / 1000);
+                this.lastPauseTime = null;
+            }
+
             this.isRunning = true;
             this.startBtn.disabled = true;
             this.pauseBtn.disabled = false;
@@ -80,6 +92,8 @@ class PomodoroTimer {
                     this.handleTimerComplete();
                 }
             }, 1000);
+
+            this.updateStats();
         }
     }
 
@@ -91,6 +105,13 @@ class PomodoroTimer {
             this.pauseBtn.disabled = true;
             this.workDurationInput.disabled = false;
             this.breakDurationInput.disabled = false;
+
+            // Track pause statistics
+            if (this.isWorkMode) {
+                this.pauseCount++;
+                this.lastPauseTime = Date.now();
+            }
+            this.updateStats();
         }
     }
 
@@ -101,9 +122,13 @@ class PomodoroTimer {
         this.breakTime = this.getBreakDuration();
         this.currentTime = this.workTime;
         this.sessionCount = 0;
+        this.pauseCount = 0;
+        this.totalPauseTime = 0;
+        this.lastPauseTime = null;
         this.sessionCountDisplay.textContent = this.sessionCount;
         this.updateDisplay();
         this.updateModeIndicator();
+        this.updateStats();
         this.workDurationInput.disabled = false;
         this.breakDurationInput.disabled = false;
     }
@@ -112,6 +137,11 @@ class PomodoroTimer {
         audioManager.playNotification(this.isWorkMode ? 'work' : 'break');
 
         if (this.isWorkMode) {
+            // Reset pause statistics on successful completion of work session
+            this.pauseCount = 0;
+            this.totalPauseTime = 0;
+            this.lastPauseTime = null;
+
             this.sessionCount++;
             this.sessionCountDisplay.textContent = this.sessionCount;
             this.currentTime = this.breakTime;
@@ -122,6 +152,7 @@ class PomodoroTimer {
         }
 
         this.updateModeIndicator();
+        this.updateStats();
     }
 
     updateDisplay() {
@@ -140,6 +171,21 @@ class PomodoroTimer {
     updateModeIndicator() {
         this.modeIndicator.textContent = this.isWorkMode ? 'Work Time' : 'Break Time';
         this.modeIndicator.className = `badge ${this.isWorkMode ? 'bg-primary' : 'bg-success'} fs-5`;
+    }
+
+    updateStats() {
+        const statsElement = document.getElementById('pauseStats');
+        if (this.isWorkMode && (this.pauseCount > 0 || this.totalPauseTime > 0)) {
+            statsElement.innerHTML = `
+                <div class="alert alert-warning" role="alert">
+                    <small>
+                        Pauses this session: ${this.pauseCount}<br>
+                        Total pause time: ${Math.floor(this.totalPauseTime / 60)}m ${this.totalPauseTime % 60}s
+                    </small>
+                </div>`;
+        } else {
+            statsElement.innerHTML = '';
+        }
     }
 }
 
