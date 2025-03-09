@@ -30,7 +30,7 @@ class NotificationManager {
         this.notificationsBlocked = true;
         
         // Cancel any scheduled task reminders
-        if (window.todoManager) {
+        if (window.todoManager && typeof window.todoManager.scheduleReminders === 'function') {
             window.todoManager.scheduleReminders();
         }
         
