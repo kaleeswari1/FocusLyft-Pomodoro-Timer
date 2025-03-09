@@ -5,14 +5,12 @@ class TodoManager {
         this.editingTaskId = null;
         window.taskReminders = [];
         
-        // We'll initialize UI only after DOM is fully loaded
-        if (document.readyState === 'complete') {
+        // Always wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
             this.initializeUI();
-        } else {
-            window.addEventListener('DOMContentLoaded', () => {
-                this.initializeUI();
-            });
-        }
+            // Schedule reminders for all tasks immediately
+            this.scheduleReminders();
+        });
     }
 
     loadTasks() {
@@ -248,6 +246,7 @@ class TodoManager {
     }
     
     scheduleReminders() {
+        console.log("Scheduling task reminders...");
         // Clear any existing reminders
         for (const reminder of window.taskReminders || []) {
             clearTimeout(reminder);
@@ -256,22 +255,46 @@ class TodoManager {
         
         // Don't schedule if notifications are blocked
         if (window.notificationManager && window.notificationManager.notificationsBlocked) {
+            console.log("Notifications are blocked, skipping reminders");
             return;
         }
         
         // Schedule new reminders for upcoming incomplete tasks
         const now = new Date();
+        console.log(`Current tasks: ${this.tasks.length}`);
         
         this.tasks.forEach(task => {
             if (task.completed || !task.dueDate) return;
             
             const dueDate = new Date(task.dueDate);
-            if (dueDate <= now) return; // Already passed
+            console.log(`Task: ${task.title}, Due: ${dueDate}`);
             
-            // Calculate milliseconds until due date
+            // Add reminder at exact due time
             const timeUntilDue = dueDate.getTime() - now.getTime();
             
-            // Set reminders at different intervals
+            if (timeUntilDue > 0) {
+                console.log(`Setting due time reminder for "${task.title}" in ${Math.round(timeUntilDue/60000)} minutes`);
+                const exactDueTimer = setTimeout(() => {
+                    // Check if the task is still incomplete when timer fires
+                    const currentTask = this.tasks.find(t => t.id === task.id);
+                    if (currentTask && !currentTask.completed) {
+                        this.showTaskReminder(task, "now");
+                    }
+                }, timeUntilDue);
+                window.taskReminders.push(exactDueTimer);
+            } else if (timeUntilDue <= 0 && timeUntilDue > -86400000) { // Within past 24 hours
+                // Task is already due but not older than 24 hours, show immediate reminder
+                setTimeout(() => {
+                    const currentTask = this.tasks.find(t => t.id === task.id);
+                    if (currentTask && !currentTask.completed) {
+                        this.showTaskReminder(task, "overdue");
+                    }
+                }, 5000); // Show after 5 seconds to ensure page is loaded
+            }
+            
+            if (timeUntilDue <= 0) return; // Don't set advance warnings for already passed tasks
+            
+            // Set reminders at different intervals before due date
             const reminderTimes = [
                 15 * 60 * 1000, // 15 minutes before
                 60 * 60 * 1000,  // 1 hour before
@@ -302,21 +325,41 @@ class TodoManager {
     }
     
     showTaskReminder(task, timeText) {
+        console.log(`Showing reminder for task: ${task.title}, time: ${timeText}`);
+        let title = `Task Reminder: ${task.title}`;
+        let body, notificationType = 'info';
+        
+        if (timeText === "now") {
+            body = `Your task "${task.title}" is due now!`;
+            notificationType = 'warning';
+        } else if (timeText === "overdue") {
+            body = `Your task "${task.title}" is overdue!`;
+            notificationType = 'danger';
+        } else {
+            body = `Your task "${task.title}" is due in ${timeText}.`;
+        }
+        
         // Show desktop notification if permission granted
         if (Notification.permission === 'granted') {
-            const notification = new Notification(`Task Reminder: ${task.title}`, {
-                body: `Your task is due in ${timeText}.`,
-                icon: '/static/images/favicon.ico'
+            const notification = new Notification(title, {
+                body: body,
+                icon: '/static/images/favicon.ico',
+                requireInteraction: timeText === "now" || timeText === "overdue" // Keep notification until user dismisses it
             });
             
-            // Close notification after 10 seconds
-            setTimeout(() => notification.close(), 10000);
+            // For regular reminders, close after 10 seconds
+            if (timeText !== "now" && timeText !== "overdue") {
+                setTimeout(() => notification.close(), 10000);
+            }
         }
         
         // Also show in-app notification
         if (window.notificationManager) {
             window.notificationManager.showNotification(
-                'Task Reminder', 
+                title,
+                body,
+                notificationType,
+                timeText === "now" || timeText === "overdue" ? 10000 : 5000 
                 `"${task.title}" is due in ${timeText}.`,
                 'warning'
             );
