@@ -1,13 +1,5 @@
 class PomodoroTimer {
     constructor() {
-        this.workTime = 25 * 60; // 25 minutes in seconds
-        this.breakTime = 5 * 60;  // 5 minutes in seconds
-        this.currentTime = this.workTime;
-        this.isWorkMode = true;
-        this.isRunning = false;
-        this.timer = null;
-        this.sessionCount = 0;
-
         // DOM elements
         this.minutesDisplay = document.getElementById('minutes');
         this.secondsDisplay = document.getElementById('seconds');
@@ -17,15 +9,59 @@ class PomodoroTimer {
         this.modeIndicator = document.getElementById('currentMode');
         this.progressBar = document.getElementById('progressBar');
         this.sessionCountDisplay = document.getElementById('sessionCount');
+        this.workDurationInput = document.getElementById('workDuration');
+        this.breakDurationInput = document.getElementById('breakDuration');
+
+        // Initialize timer values
+        this.workTime = this.getWorkDuration();
+        this.breakTime = this.getBreakDuration();
+        this.currentTime = this.workTime;
+        this.isWorkMode = true;
+        this.isRunning = false;
+        this.timer = null;
+        this.sessionCount = 0;
 
         this.initializeEventListeners();
         this.updateDisplay();
+    }
+
+    getWorkDuration() {
+        const duration = Math.min(Math.max(parseInt(this.workDurationInput.value) || 25, 1), 60);
+        this.workDurationInput.value = duration;
+        return duration * 60;
+    }
+
+    getBreakDuration() {
+        const duration = Math.min(Math.max(parseInt(this.breakDurationInput.value) || 5, 1), 30);
+        this.breakDurationInput.value = duration;
+        return duration * 60;
     }
 
     initializeEventListeners() {
         this.startBtn.addEventListener('click', () => this.start());
         this.pauseBtn.addEventListener('click', () => this.pause());
         this.resetBtn.addEventListener('click', () => this.reset());
+
+        // Add input validation and update timer on duration changes
+        this.workDurationInput.addEventListener('change', () => {
+            if (!this.isRunning) {
+                this.workTime = this.getWorkDuration();
+                if (this.isWorkMode) {
+                    this.currentTime = this.workTime;
+                    this.updateDisplay();
+                }
+            }
+        });
+
+        this.breakDurationInput.addEventListener('change', () => {
+            if (!this.isRunning) {
+                this.breakTime = this.getBreakDuration();
+                if (!this.isWorkMode) {
+                    this.currentTime = this.breakTime;
+                    this.updateDisplay();
+                }
+            }
+        });
     }
 
     start() {
@@ -33,7 +69,9 @@ class PomodoroTimer {
             this.isRunning = true;
             this.startBtn.disabled = true;
             this.pauseBtn.disabled = false;
-            
+            this.workDurationInput.disabled = true;
+            this.breakDurationInput.disabled = true;
+
             this.timer = setInterval(() => {
                 this.currentTime--;
                 this.updateDisplay();
@@ -51,20 +89,28 @@ class PomodoroTimer {
             clearInterval(this.timer);
             this.startBtn.disabled = false;
             this.pauseBtn.disabled = true;
+            this.workDurationInput.disabled = false;
+            this.breakDurationInput.disabled = false;
         }
     }
 
     reset() {
         this.pause();
         this.isWorkMode = true;
+        this.workTime = this.getWorkDuration();
+        this.breakTime = this.getBreakDuration();
         this.currentTime = this.workTime;
+        this.sessionCount = 0;
+        this.sessionCountDisplay.textContent = this.sessionCount;
         this.updateDisplay();
         this.updateModeIndicator();
+        this.workDurationInput.disabled = false;
+        this.breakDurationInput.disabled = false;
     }
 
     handleTimerComplete() {
         audioManager.playNotification(this.isWorkMode ? 'work' : 'break');
-        
+
         if (this.isWorkMode) {
             this.sessionCount++;
             this.sessionCountDisplay.textContent = this.sessionCount;
@@ -81,7 +127,7 @@ class PomodoroTimer {
     updateDisplay() {
         const minutes = Math.floor(this.currentTime / 60);
         const seconds = this.currentTime % 60;
-        
+
         this.minutesDisplay.textContent = minutes.toString().padStart(2, '0');
         this.secondsDisplay.textContent = seconds.toString().padStart(2, '0');
 

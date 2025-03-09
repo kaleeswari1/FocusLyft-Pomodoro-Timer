@@ -11,6 +11,21 @@
     <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center">
         <div class="text-center mb-4">
             <h1 class="display-4 mb-3">Pomodoro Timer</h1>
+
+            <!-- Timer Settings -->
+            <div class="timer-settings mb-4">
+                <div class="row justify-content-center g-3">
+                    <div class="col-6 col-sm-4">
+                        <label for="workDuration" class="form-label">Work Duration (min)</label>
+                        <input type="number" class="form-control" id="workDuration" value="25" min="1" max="60">
+                    </div>
+                    <div class="col-6 col-sm-4">
+                        <label for="breakDuration" class="form-label">Break Duration (min)</label>
+                        <input type="number" class="form-control" id="breakDuration" value="5" min="1" max="30">
+                    </div>
+                </div>
+            </div>
+
             <div class="mode-indicator mb-3">
                 <span id="currentMode" class="badge bg-primary fs-5">Work Time</span>
             </div>
@@ -19,7 +34,7 @@
                 <span class="display-1">:</span>
                 <span id="seconds" class="display-1">00</span>
             </div>
-            
+
             <div class="progress mb-4" style="height: 10px;">
                 <div id="progressBar" class="progress-bar" role="progressbar" style="width: 100%"></div>
             </div>
