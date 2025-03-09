@@ -27,6 +27,9 @@ class PomodoroTimer {
         this.timer = null;
         this.sessionCount = 0;
 
+        // Add focus mode status element
+        this.focusStatus = document.getElementById('focusStatus');
+
         this.initializeEventListeners();
         this.updateDisplay();
         this.updateStats();
@@ -84,6 +87,12 @@ class PomodoroTimer {
             this.pauseBtn.disabled = false;
             this.workDurationInput.disabled = true;
             this.breakDurationInput.disabled = true;
+
+            // Enable focus mode when starting work session
+            if (this.isWorkMode) {
+                notificationManager.blockNotifications();
+                this.focusStatus.classList.remove('d-none');
+            }
 
             this.timer = setInterval(() => {
                 this.currentTime--;
@@ -145,6 +154,10 @@ class PomodoroTimer {
             this.totalPauseTime = 0;
             this.lastPauseTime = null;
 
+            // Disable focus mode when work session ends
+            notificationManager.unblockNotifications();
+            this.focusStatus.classList.add('d-none');
+
             this.sessionCount++;
             this.sessionCountDisplay.textContent = this.sessionCount;
             this.currentTime = this.breakTime;
@@ -153,6 +166,10 @@ class PomodoroTimer {
             audioManager.playNotification('break');
             this.currentTime = this.workTime;
             this.isWorkMode = true;
+
+            // Re-enable focus mode when starting new work session
+            notificationManager.blockNotifications();
+            this.focusStatus.classList.remove('d-none');
         }
 
         this.updateModeIndicator();
