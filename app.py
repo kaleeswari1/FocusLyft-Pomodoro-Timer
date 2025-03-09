@@ -22,5 +22,10 @@ def index():
         logger.error(f"Error serving index page: {str(e)}")
         return str(e), 500
 
+@app.route('/health')
+def health():
+    logger.info("Health check endpoint hit")
+    return "OK", 200
+
 # Log startup
 logger.info("Flask application initialized")
