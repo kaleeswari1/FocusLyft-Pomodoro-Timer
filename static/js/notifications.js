@@ -130,15 +130,15 @@ class NotificationManager {
 
 const notificationManager = new NotificationManager();
 
-// Handle notification toggle - but safely check for elements first
+// Wait for DOM to be fully loaded before accessing elements
 document.addEventListener('DOMContentLoaded', () => {
+    // Handle notification toggle
     const toggleBtn = document.getElementById('toggleNotifications');
     const focusStatus = document.getElementById('focusStatus');
     
-    // Only set up the event listener if the elements exist
     if (toggleBtn && focusStatus) {
         let notificationsBlocked = false;
-
+        
         toggleBtn.addEventListener('click', async () => {
             if (notificationsBlocked) {
                 // Unblock notifications
