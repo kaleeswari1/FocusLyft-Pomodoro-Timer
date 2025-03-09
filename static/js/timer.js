@@ -88,10 +88,15 @@ class PomodoroTimer {
             this.workDurationInput.disabled = true;
             this.breakDurationInput.disabled = true;
 
-            // Enable focus mode when starting work session
+            // Enable focus mode and set reminders when starting work session
             if (this.isWorkMode) {
                 notificationManager.blockNotifications();
                 this.focusStatus.classList.remove('d-none');
+                // Set reminder for 5 minutes before end of work session
+                notificationManager.setStudyReminder(this.workTime / 60);
+            } else {
+                // Set reminder for break time
+                notificationManager.setBreakReminder(this.breakTime / 60);
             }
 
             this.timer = setInterval(() => {
@@ -141,6 +146,7 @@ class PomodoroTimer {
         this.updateStats();
         this.workDurationInput.disabled = false;
         this.breakDurationInput.disabled = false;
+        notificationManager.clearAllReminders();
     }
 
     handleTimerComplete() {
