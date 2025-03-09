@@ -4,6 +4,7 @@ class NotificationManager {
         this.hasPermission = false;
         this.checkPermission();
         this.reminderIntervals = [];
+        this.notificationsBlocked = false;
     }
 
     async checkPermission() {
@@ -25,8 +26,11 @@ class NotificationManager {
             await this.checkPermission();
         }
 
+        // Set the block state
+        this.notificationsBlocked = true;
+        
         if (this.hasPermission) {
-            // Create a focus notification
+            // Create a focus notification before blocking
             new Notification("Focus Mode Activated", {
                 body: "Notifications are now blocked for better concentration",
                 icon: "/static/images/focus-icon.svg"
@@ -41,6 +45,28 @@ class NotificationManager {
                 }
             }
             
+            // Override the native Notification constructor to block all notifications
+            const originalNotification = window.Notification;
+            window.Notification = function(title, options) {
+                if (notificationManager.notificationsBlocked) {
+                    console.log("Notification blocked:", title);
+                    return {
+                        close: function() {}
+                    };
+                }
+                return new originalNotification(title, options);
+            };
+            
+            // Copy properties from the original Notification
+            for (let prop in originalNotification) {
+                if (originalNotification.hasOwnProperty(prop)) {
+                    window.Notification[prop] = originalNotification[prop];
+                }
+            }
+            
+            // Store original for later restoration
+            window.Notification._original = originalNotification;
+            
             // Also disable audio notifications
             if (window.audioManager) {
                 window.audioManager.setNotificationsEnabled(false);
@@ -49,6 +75,14 @@ class NotificationManager {
     }
 
     async unblockNotifications() {
+        // Reset the block state
+        this.notificationsBlocked = false;
+        
+        // Restore original Notification if it was overridden
+        if (window.Notification && window.Notification._original) {
+            window.Notification = window.Notification._original;
+        }
+        
         if ('Focus' in window) {
             try {
                 await window.Focus.release();
@@ -137,10 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const focusStatus = document.getElementById('focusStatus');
     
     if (toggleBtn && focusStatus) {
-        let notificationsBlocked = false;
-        
         toggleBtn.addEventListener('click', async () => {
-            if (notificationsBlocked) {
+            if (notificationManager.notificationsBlocked) {
                 // Unblock notifications
                 await notificationManager.unblockNotifications();
                 toggleBtn.innerHTML = '<i class="fas fa-bell"></i> Block Notifications';
@@ -155,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 toggleBtn.classList.add('btn-danger');
                 focusStatus.classList.remove('d-none');
             }
-            notificationsBlocked = !notificationsBlocked;
         });
     }
 });
