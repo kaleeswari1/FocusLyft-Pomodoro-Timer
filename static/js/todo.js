@@ -60,7 +60,15 @@ class TodoManager {
     toggleTaskCompletion(taskId) {
         const taskIndex = this.tasks.findIndex(task => task.id === Number(taskId));
         if (taskIndex !== -1) {
-            this.tasks[taskIndex].completed = !this.tasks[taskIndex].completed;
+            const task = this.tasks[taskIndex];
+            const wasCompleted = task.completed;
+            task.completed = !wasCompleted;
+            
+            // Award points when completing a task (not when uncompleting)
+            if (!wasCompleted && task.completed && window.rewardsManager) {
+                window.rewardsManager.recordCompletedTask(task);
+            }
+            
             this.saveTasks();
             this.updateTaskList();
             this.scheduleReminders();

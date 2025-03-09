@@ -104,6 +104,165 @@ button:focus {
     font-size: 0.8rem;
 }
 
+/* Rewards System Styles */
+.rewards-container {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.rewards-points {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.points-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #6610f2;
+    margin-left: 10px;
+}
+
+.points-animation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(102, 16, 242, 0.9);
+    color: white;
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    border-radius: 30px;
+    opacity: 0;
+    transition: all 0.5s ease;
+    z-index: 1000;
+    text-align: center;
+}
+
+.points-animation small {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.points-animation.show {
+    opacity: 1;
+    transform: translate(-50%, -150%);
+}
+
+.badge-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.badge-item.achieved {
+    background-color: rgba(25, 135, 84, 0.1);
+    border: 1px solid rgba(25, 135, 84, 0.2);
+}
+
+.badge-item.locked {
+    background-color: rgba(108, 117, 125, 0.1);
+    border: 1px solid rgba(108, 117, 125, 0.2);
+    opacity: 0.7;
+}
+
+.badge-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+    text-align: center;
+    width: 40px;
+}
+
+.badge-details h5 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.badge-details p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.achievement-popup {
+    position: fixed;
+    bottom: -100px;
+    right: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    max-width: 350px;
+    z-index: 1000;
+    transition: all 0.5s ease;
+}
+
+.achievement-popup.show {
+    bottom: 20px;
+}
+
+.achievement-icon {
+    font-size: 2.5rem;
+    margin-right: 15px;
+}
+
+.achievement-details h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #6610f2;
+}
+
+.achievement-details p {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+}
+
+.streaks-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.streak-box {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(13, 110, 253, 0.1);
+    width: 45%;
+}
+
+.streak-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.streak-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Level progress bar */
+.level-progress {
+    margin: 15px 0;
+}
+
+.level-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
 .task-overdue {
     color: #dc3545;
     font-weight: bold;

@@ -201,6 +201,11 @@ class PomodoroTimer {
 
         this.rewardMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
         this.rewardMessage.classList.add('show');
+        
+        // Add rewards points and record completed pomodoro
+        if (window.rewardsManager) {
+            window.rewardsManager.recordCompletedPomodoro();
+        }t.add('show');
 
         // Hide message after 3 seconds
         setTimeout(() => {
