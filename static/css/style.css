@@ -340,3 +340,171 @@ button:focus {
 .notification {
     animation: popIn 0.3s ease-out forwards;
 }
+
+/* Session Feedback Modal Styles */
+.feedback-emojis {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.feedback-emoji {
+    font-size: 2.5rem;
+    padding: 15px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    background: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.feedback-emoji:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.feedback-emoji.selected {
+    border-color: var(--bs-primary);
+    background-color: rgba(0, 123, 255, 0.2);
+    transform: scale(1.15);
+}
+
+.session-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.feedback-tag {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.feedback-tag:hover {
+    transform: translateY(-2px);
+}
+
+.feedback-tag.selected {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Responsive adjustments for feedback modal */
+@media (max-width: 576px) {
+    .feedback-emojis {
+        gap: 10px;
+    }
+    
+    .feedback-emoji {
+        font-size: 2rem;
+        padding: 10px;
+    }
+    
+    .session-tags .feedback-tag {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Session Statistics Styles */
+.stat-box {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(13, 110, 253, 0.1);
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--bs-primary);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--bs-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.session-timeline {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.session-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.session-dot:hover {
+    transform: scale(1.2);
+    border-color: var(--bs-primary);
+}
+
+.session-dot.rating-1 { background-color: #dc3545; }
+.session-dot.rating-2 { background-color: #fd7e14; }
+.session-dot.rating-3 { background-color: #ffc107; }
+.session-dot.rating-4 { background-color: #28a745; }
+.session-dot.rating-5 { background-color: #20c997; }
+
+/* Responsive adjustments for stats */
+@media (max-width: 768px) {
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .session-timeline {
+        gap: 5px;
+    }
+    
+    .session-dot {
+        width: 25px;
+        height: 25px;
+        font-size: 1rem;
+    }
+}

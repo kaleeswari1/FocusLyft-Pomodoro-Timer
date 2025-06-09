@@ -132,6 +132,47 @@
                 </div>
             </div>
 
+            <!-- Session Statistics Section -->
+            <div class="card mt-4" id="sessionStatsCard" style="display: none;">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Session Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <div class="stat-value" id="totalSessionsCount">0</div>
+                                <div class="stat-label">Total Sessions</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <div class="stat-value" id="averageRating">0</div>
+                                <div class="stat-label">Average Rating</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <div class="stat-value" id="recentRating">0</div>
+                                <div class="stat-label">Recent Average</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <div class="stat-box">
+                                <div class="stat-value" id="topMood">-</div>
+                                <div class="stat-label">Top Mood</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h6 class="text-muted">Recent Sessions</h6>
+                        <div id="recentSessionsChart" class="session-timeline">
+                            <!-- Recent sessions will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Enhanced Reminders Section -->
             <div class="card mt-4">
                 <div class="card-header">
@@ -219,8 +260,55 @@
         </div>
     </div>
 
+    <!-- Session Feedback Modal -->
+    <div class="modal fade" id="sessionFeedbackModal" tabindex="-1" aria-labelledby="sessionFeedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sessionFeedbackModalLabel">How was your session?</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-4">Rate your focus and productivity for this session:</p>
+                    
+                    <!-- Emoji Rating -->
+                    <div class="feedback-emojis mb-4">
+                        <button type="button" class="btn feedback-emoji" data-rating="1" title="Poor Focus">😞</button>
+                        <button type="button" class="btn feedback-emoji" data-rating="2" title="Below Average">😐</button>
+                        <button type="button" class="btn feedback-emoji" data-rating="3" title="Good">🙂</button>
+                        <button type="button" class="btn feedback-emoji" data-rating="4" title="Great">😊</button>
+                        <button type="button" class="btn feedback-emoji" data-rating="5" title="Excellent">🤩</button>
+                    </div>
+
+                    <!-- Quick Notes -->
+                    <div class="mb-3">
+                        <label for="sessionNotes" class="form-label">Quick notes (optional):</label>
+                        <textarea class="form-control" id="sessionNotes" rows="3" placeholder="What went well? Any distractions?"></textarea>
+                    </div>
+
+                    <!-- Session Tags -->
+                    <div class="mb-3">
+                        <p class="small text-muted mb-2">Session characteristics:</p>
+                        <div class="session-tags">
+                            <button type="button" class="btn btn-sm btn-outline-secondary feedback-tag" data-tag="focused">🎯 Focused</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary feedback-tag" data-tag="distracted">😵 Distracted</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary feedback-tag" data-tag="productive">⚡ Productive</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary feedback-tag" data-tag="tired">😴 Tired</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary feedback-tag" data-tag="motivated">🚀 Motivated</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary feedback-tag" data-tag="stressed">😰 Stressed</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="skipFeedback">Skip</button>
+                    <button type="button" class="btn btn-primary" id="submitFeedback" disabled>Submit Feedback</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
     <script src="{{ url_for('static', filename='js/exams.js') }}"></script>
     <script src="{{ url_for('static', filename='js/todo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>

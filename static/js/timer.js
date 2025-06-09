@@ -252,6 +252,13 @@ class PomodoroTimer {
         setTimeout(() => {
             this.rewardMessage.classList.remove('show');
             this.rewardMessage.classList.remove('milestone-celebration');
+            
+            // Show feedback modal after celebration
+            setTimeout(() => {
+                if (window.sessionFeedback) {
+                    window.sessionFeedback.showFeedbackModal();
+                }
+            }, 500);
         }, 4000);
     }
 
