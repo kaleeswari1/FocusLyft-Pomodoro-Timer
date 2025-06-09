@@ -227,7 +227,75 @@ class SessionFeedback {
             lastSession: this.sessionHistory[this.sessionHistory.length - 1]
         };
     }
+
+    updateStatisticsDisplay() {
+        const stats = this.getSessionStats();
+        const statsCard = document.getElementById('sessionStatsCard');
+        
+        if (!stats || stats.totalSessions === 0) {
+            if (statsCard) {
+                statsCard.style.display = 'none';
+            }
+            return;
+        }
+
+        // Show stats card
+        if (statsCard) {
+            statsCard.style.display = 'block';
+        }
+
+        // Update stat values
+        const totalElement = document.getElementById('totalSessionsCount');
+        const avgElement = document.getElementById('averageRating');
+        const recentElement = document.getElementById('recentRating');
+        const topMoodElement = document.getElementById('topMood');
+
+        if (totalElement) totalElement.textContent = stats.totalSessions;
+        if (avgElement) avgElement.textContent = stats.averageRating.toFixed(1);
+        if (recentElement) recentElement.textContent = stats.recentAverageRating.toFixed(1);
+        if (topMoodElement && stats.topTags.length > 0) {
+            topMoodElement.textContent = stats.topTags[0][0];
+        }
+
+        // Update recent sessions timeline
+        this.updateSessionTimeline();
+    }
+
+    updateSessionTimeline() {
+        const timelineElement = document.getElementById('recentSessionsChart');
+        if (!timelineElement) return;
+
+        const recentSessions = this.sessionHistory.slice(-10); // Show last 10 sessions
+        
+        if (recentSessions.length === 0) {
+            timelineElement.innerHTML = '<p class="text-muted text-center">No sessions yet</p>';
+            return;
+        }
+
+        const sessionDots = recentSessions.map((session, index) => {
+            const ratingEmojis = ['😞', '😐', '🙂', '😊', '🤩'];
+            const emoji = ratingEmojis[session.rating - 1];
+            const date = new Date(session.date).toLocaleDateString();
+            
+            return `
+                <div class="session-dot rating-${session.rating}" 
+                     title="Session ${session.sessionNumber} - Rating: ${session.rating}/5 - ${date}">
+                    ${emoji}
+                </div>
+            `;
+        }).join('');
+
+        timelineElement.innerHTML = sessionDots;
+    }
+
+    // Initialize statistics display on page load
+    initializeStatisticsDisplay() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.updateStatisticsDisplay();
+        });
+    }
 }
 
 // Create global feedback manager
 window.sessionFeedback = new SessionFeedback();
+window.sessionFeedback.initializeStatisticsDisplay();
