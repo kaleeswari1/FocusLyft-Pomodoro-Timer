@@ -60,6 +60,22 @@ window.AudioManager = class AudioManager {
                 oscillator.start();
                 setTimeout(() => oscillator.stop(), 200);
                 break;
+            case 'reward':
+                // Celebratory ascending melody for completed sessions
+                oscillator.frequency.value = 523.25; // C5
+                gainNode.gain.value = 0.4;
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.frequency.value = 659.25; // E5
+                    setTimeout(() => {
+                        oscillator.frequency.value = 783.99; // G5
+                        setTimeout(() => {
+                            oscillator.frequency.value = 1046.50; // C6
+                            setTimeout(() => oscillator.stop(), 400);
+                        }, 200);
+                    }, 200);
+                }, 200);
+                break;
             default:
                 oscillator.frequency.value = 440;
                 gainNode.gain.value = 0.3;

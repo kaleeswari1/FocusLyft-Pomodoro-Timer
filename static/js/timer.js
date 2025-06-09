@@ -169,7 +169,9 @@ class PomodoroTimer {
             this.currentTime = this.breakTime;
             this.isWorkMode = false;
         } else {
+            // Break completed - encourage next session
             audioManager.playNotification('break');
+            this.showBreakCompleteMessage();
             this.currentTime = this.workTime;
             this.isWorkMode = true;
 
@@ -183,29 +185,140 @@ class PomodoroTimer {
     }
 
     showReward() {
-        // Trigger confetti animation
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
+        // Enhanced confetti celebration
+        this.triggerCelebration();
 
-        // Show motivational message
-        const messages = [
-            "Great work! 🌟",
-            "You're crushing it! 💪",
-            "Keep up the momentum! 🚀",
-            "Excellent focus! 🎯",
-            "Amazing progress! ⭐"
-        ];
-
-        this.rewardMessage.textContent = messages[Math.floor(Math.random() * messages.length)];
+        // Show congratulatory message based on session count milestones
+        let selectedMessage;
+        
+        if (this.sessionCount === 1) {
+            selectedMessage = "Congratulations! First Session Complete! 🎉";
+        } else if (this.sessionCount === 5) {
+            selectedMessage = "Amazing! 5 Sessions Completed! You're Building Great Habits! 🏆";
+        } else if (this.sessionCount === 10) {
+            selectedMessage = "Incredible! 10 Sessions Done! You're a Focus Master! 👑";
+        } else if (this.sessionCount % 25 === 0) {
+            selectedMessage = `Phenomenal! ${this.sessionCount} Sessions! You're Unstoppable! 🌟`;
+        } else if (this.sessionCount % 10 === 0) {
+            selectedMessage = `Outstanding! ${this.sessionCount} Sessions Completed! 🚀`;
+        } else if (this.sessionCount % 5 === 0) {
+            selectedMessage = `Excellent! ${this.sessionCount} Sessions Done! Keep It Up! 💪`;
+        } else {
+            const congratsMessages = [
+                "Well Done! Session Complete! 🌟", 
+                "Excellent Work! You Stayed Focused! 💪",
+                "Outstanding Focus! Another Win! 🚀",
+                "Fantastic Job! Keep Going! ⭐",
+                "Bravo! You Crushed That Session! 🎯",
+                "Superb Concentration! Well Earned Break! 🏆",
+                "Great Dedication! You're Doing Amazing! 🔥"
+            ];
+            selectedMessage = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
+        }
+        this.rewardMessage.textContent = selectedMessage;
         this.rewardMessage.classList.add('show');
+        
+        // Add special milestone styling for significant achievements
+        if (this.sessionCount === 1 || this.sessionCount === 5 || this.sessionCount === 10 || 
+            this.sessionCount % 25 === 0 || this.sessionCount % 10 === 0) {
+            this.rewardMessage.classList.add('milestone-celebration');
+            // Extra confetti for milestones
+            setTimeout(() => {
+                confetti({
+                    particleCount: 200,
+                    spread: 160,
+                    origin: { y: 0.5 },
+                    colors: ['#FFD700', '#FF69B4', '#00CED1', '#98FB98', '#DDA0DD', '#F0E68C']
+                });
+            }, 1000);
+        }
+        
+        // Show celebration notification
+        if (window.notificationManager) {
+            window.notificationManager.showNotification(
+                "Session Complete!", 
+                "Congratulations on completing your Pomodoro session!", 
+                'success', 
+                4000
+            );
+        }
         
         // Add rewards points and record completed pomodoro
         if (window.rewardsManager) {
             window.rewardsManager.recordCompletedPomodoro();
-        }t.add('show');
+        }
+
+        // Hide message after 4 seconds (longer to enjoy the celebration)
+        setTimeout(() => {
+            this.rewardMessage.classList.remove('show');
+            this.rewardMessage.classList.remove('milestone-celebration');
+        }, 4000);
+    }
+
+    triggerCelebration() {
+        // Multiple confetti bursts for more celebration
+        confetti({
+            particleCount: 150,
+            spread: 60,
+            origin: { y: 0.6 },
+            colors: ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7']
+        });
+
+        // Second burst with different pattern
+        setTimeout(() => {
+            confetti({
+                particleCount: 100,
+                spread: 120,
+                origin: { y: 0.8 },
+                colors: ['#FD79A8', '#FDCB6E', '#6C5CE7', '#A29BFE', '#74B9FF']
+            });
+        }, 300);
+
+        // Third burst from corners
+        setTimeout(() => {
+            confetti({
+                particleCount: 50,
+                spread: 45,
+                origin: { x: 0, y: 0.6 }
+            });
+            confetti({
+                particleCount: 50,
+                spread: 45,
+                origin: { x: 1, y: 0.6 }
+            });
+        }, 600);
+    }
+
+    showBreakCompleteMessage() {
+        const breakMessages = [
+            "Break Complete! Ready for Another Session? 💪",
+            "Refreshed and Ready! Let's Focus Again! 🚀",
+            "Break Time Over! Time to Get Back to Work! ⭐",
+            "Recharged! Let's Continue the Momentum! 🔥",
+            "Break Done! Ready to Tackle the Next Session! 🎯"
+        ];
+
+        const selectedMessage = breakMessages[Math.floor(Math.random() * breakMessages.length)];
+        this.rewardMessage.textContent = selectedMessage;
+        this.rewardMessage.classList.add('show');
+        
+        // Show encouraging notification
+        if (window.notificationManager) {
+            window.notificationManager.showNotification(
+                "Break Complete!", 
+                "Time to start your next focus session!", 
+                'info', 
+                3000
+            );
+        }
+
+        // Light confetti for break completion
+        confetti({
+            particleCount: 50,
+            spread: 45,
+            origin: { y: 0.7 },
+            colors: ['#17a2b8', '#20c997', '#6f42c1']
+        });
 
         // Hide message after 3 seconds
         setTimeout(() => {
