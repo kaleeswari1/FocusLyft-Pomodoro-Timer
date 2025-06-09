@@ -131,6 +131,91 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- Enhanced Reminders Section -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Smart Reminders</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Health & Wellness Reminders -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Health & Wellness</h6>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Hydration Reminder</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="hydrationInterval" placeholder="30" min="5" max="120">
+                                <span class="input-group-text">min</span>
+                                <button class="btn btn-outline-primary" id="setHydration">Set</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Eye Rest (20-20-20 Rule)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="eyeRestInterval" placeholder="20" min="10" max="60">
+                                <span class="input-group-text">min</span>
+                                <button class="btn btn-outline-primary" id="setEyeRest">Set</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Posture Check</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="postureInterval" placeholder="45" min="15" max="120">
+                                <span class="input-group-text">min</span>
+                                <button class="btn btn-outline-primary" id="setPosture">Set</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Study Reminder -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Daily Study Schedule</h6>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Daily Study Time</label>
+                            <div class="input-group">
+                                <input type="time" class="form-control" id="dailyStudyTime">
+                                <button class="btn btn-outline-primary" id="setDailyStudy">Set Reminder</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Reminders -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Custom Reminders</h6>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="text" class="form-control" id="customTitle" placeholder="Reminder Title">
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <input type="text" class="form-control" id="customMessage" placeholder="Reminder Message">
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <input type="number" class="form-control" id="customInterval" placeholder="30" min="1">
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <button class="btn btn-success w-100" id="addCustomReminder">Add</button>
+                        </div>
+                    </div>
+
+                    <!-- Active Reminders Display -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-3">Active Reminders</h6>
+                            <div id="activeReminders" class="alert alert-info">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>No active reminders</span>
+                                    <button class="btn btn-sm btn-outline-danger" id="clearAllReminders">Clear All</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -54,6 +54,12 @@ window.AudioManager = class AudioManager {
                     setTimeout(() => oscillator.stop(), 300);
                 }, 300);
                 break;
+            case 'gentle':
+                oscillator.frequency.value = 261.63; // C4
+                gainNode.gain.value = 0.2;
+                oscillator.start();
+                setTimeout(() => oscillator.stop(), 200);
+                break;
             default:
                 oscillator.frequency.value = 440;
                 gainNode.gain.value = 0.3;
