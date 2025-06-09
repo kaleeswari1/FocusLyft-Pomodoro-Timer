@@ -21,45 +21,26 @@ class SessionFeedback {
     }
 
     setupModalEventListeners() {
-        // Emoji rating buttons
-        const emojiButtons = document.querySelectorAll('.feedback-emoji');
-        emojiButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                this.selectRating(button);
-            });
-        });
+        const modal = document.getElementById('sessionFeedbackModal');
+        if (!modal) return;
 
-        // Tag buttons
-        const tagButtons = document.querySelectorAll('.feedback-tag');
-        tagButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                this.toggleTag(button);
-            });
-        });
-
-        // Submit and skip buttons
-        const submitBtn = document.getElementById('submitFeedback');
-        const skipBtn = document.getElementById('skipFeedback');
-
-        if (submitBtn) {
-            submitBtn.addEventListener('click', () => {
+        // Use event delegation on the modal container
+        modal.addEventListener('click', (e) => {
+            if (e.target.classList.contains('feedback-emoji')) {
+                this.selectRating(e.target);
+            } else if (e.target.classList.contains('feedback-tag')) {
+                this.toggleTag(e.target);
+            } else if (e.target.id === 'submitFeedback') {
                 this.submitFeedback();
-            });
-        }
-
-        if (skipBtn) {
-            skipBtn.addEventListener('click', () => {
+            } else if (e.target.id === 'skipFeedback') {
                 this.skipFeedback();
-            });
-        }
+            }
+        });
 
         // Modal reset when hidden
-        const modal = document.getElementById('sessionFeedbackModal');
-        if (modal) {
-            modal.addEventListener('hidden.bs.modal', () => {
-                this.resetForm();
-            });
-        }
+        modal.addEventListener('hidden.bs.modal', () => {
+            this.resetForm();
+        });
     }
 
     selectRating(button) {
@@ -92,8 +73,20 @@ class SessionFeedback {
     }
 
     showFeedbackModal() {
-        const modal = new bootstrap.Modal(document.getElementById('sessionFeedbackModal'));
+        const modalElement = document.getElementById('sessionFeedbackModal');
+        if (!modalElement) return;
+        
+        // Force focus and show modal
+        const modal = new bootstrap.Modal(modalElement, {
+            backdrop: 'static',
+            keyboard: true
+        });
         modal.show();
+        
+        // Ensure the modal is interactive
+        setTimeout(() => {
+            modalElement.focus();
+        }, 200);
     }
 
     submitFeedback() {
@@ -109,31 +102,35 @@ class SessionFeedback {
         this.sessionHistory.push(sessionData);
         this.saveSessionHistory();
 
-        // Show thank you message
-        if (window.notificationManager) {
-            window.notificationManager.showNotification(
-                'Feedback Saved!', 
-                'Thank you for rating your session. This helps track your progress!', 
-                'success', 
-                3000
-            );
-        }
-
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('sessionFeedbackModal'));
+        // Close modal immediately
+        const modalElement = document.getElementById('sessionFeedbackModal');
+        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.hide();
 
-        // Update statistics display
-        this.updateStatisticsDisplay();
-
-        // Show insights if enough data
+        // Show thank you message after modal closes
         setTimeout(() => {
-            this.showInsights();
-        }, 1000);
+            if (window.notificationManager) {
+                window.notificationManager.showNotification(
+                    'Feedback Saved!', 
+                    'Thank you for rating your session. This helps track your progress!', 
+                    'success', 
+                    3000
+                );
+            }
+            
+            // Update statistics display
+            this.updateStatisticsDisplay();
+            
+            // Show insights if enough data
+            setTimeout(() => {
+                this.showInsights();
+            }, 1000);
+        }, 300);
     }
 
     skipFeedback() {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('sessionFeedbackModal'));
+        const modalElement = document.getElementById('sessionFeedbackModal');
+        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
         modal.hide();
     }
 
