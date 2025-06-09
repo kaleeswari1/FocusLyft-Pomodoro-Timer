@@ -359,9 +359,7 @@ class TodoManager {
                 title,
                 body,
                 notificationType,
-                timeText === "now" || timeText === "overdue" ? 10000 : 5000 
-                `"${task.title}" is due in ${timeText}.`,
-                'warning'
+                timeText === "now" || timeText === "overdue" ? 10000 : 5000
             );
         }
     }
