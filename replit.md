@@ -20,6 +20,9 @@ Preferred communication style: Simple, everyday language.
   - `notifications.js`: Browser notification management
   - `audio.js`: Web Audio API for sound notifications
   - `quotes.js`: Daily motivation quotes and study tips system
+  - `reflection.js`: Study reflection journal and distraction tracking
+  - `achievements.js`: Custom achievement paths and goal setting
+  - `knowledge.js`: Mini knowledge reminders during breaks
 
 ## Backend Architecture
 - **Framework**: Flask (Python) serving as a minimal web server
@@ -61,6 +64,36 @@ Preferred communication style: Simple, everyday language.
 - **Session Integration**: Automatic quote display when starting work sessions
 - **Visual Design**: Gradient backgrounds with smooth transitions and hover effects
 - **Content Types**: Mix of inspirational quotes and practical study techniques
+
+## Study Reflection System
+- **Smart Prompting**: Reflection modal after every 3-4 completed sessions
+- **Varied Questions**: Rotating prompts about accomplishments and challenges
+- **Rating System**: 5-point scale for session productivity evaluation
+- **Subject Tracking**: Links reflections to specific study subjects
+- **Journal View**: Historical view of all reflection entries with insights
+
+## Distraction Tracking
+- **Automatic Detection**: Monitors when user leaves app during active sessions
+- **Quick Capture**: One-click distraction categorization system
+- **Pattern Analysis**: Weekly distraction reports with time-based insights
+- **Smart Suggestions**: Personalized recommendations based on distraction patterns
+- **Focus Improvement**: Data-driven approach to reducing interruptions
+
+## Custom Achievement System
+- **Personal Goal Setting**: Create custom milestones based on individual needs
+- **Multiple Goal Types**: Sessions, subjects, streaks, time-based, and custom metrics
+- **Progress Tracking**: Visual progress bars and real-time updates
+- **Reward Integration**: Personal reward messages with confetti celebrations
+- **Achievement Categories**: Sessions completion, subject focus, consecutive days, study time
+- **Deadline Support**: Optional target dates for time-bound goals
+
+## Knowledge Reminder System
+- **Subject-Specific Content**: Curated formulas, concepts, and tips by subject area
+- **Break Integration**: Mini-learning moments during break periods
+- **Content Variety**: Mix of formulas, study techniques, and motivational insights
+- **Save Feature**: Bookmark useful reminders for later review
+- **Smart Rotation**: Avoids repetition by tracking recently shown content
+- **Multi-Subject Support**: Mathematics, Science, History, English, Languages, and General study tips
 
 # External Dependencies
 

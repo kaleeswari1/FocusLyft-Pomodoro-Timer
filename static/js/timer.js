@@ -171,6 +171,21 @@ class PomodoroTimer {
 
             this.sessionCount++;
             this.sessionCountDisplay.textContent = this.sessionCount;
+            
+            // Log session for reflection and achievements
+            this.logSession();
+            
+            // Trigger reflection journal check
+            if (window.reflectionJournal) {
+                window.reflectionJournal.onSessionComplete();
+            }
+            
+            // Update achievements
+            if (window.customAchievements) {
+                const currentSubject = document.getElementById('currentSubject')?.value || 'General';
+                window.customAchievements.onSessionComplete(currentSubject);
+            }
+
             this.currentTime = this.breakTime;
             this.isWorkMode = false;
         } else {
@@ -179,6 +194,11 @@ class PomodoroTimer {
             this.showBreakCompleteMessage();
             this.currentTime = this.workTime;
             this.isWorkMode = true;
+            
+            // Show knowledge reminder during break
+            if (window.knowledgeReminders) {
+                window.knowledgeReminders.onBreakStart();
+            }
 
             // Re-enable focus mode when starting new work session
             notificationManager.blockNotifications();
@@ -187,6 +207,28 @@ class PomodoroTimer {
 
         this.updateModeIndicator();
         this.updateStats();
+    }
+    
+    logSession() {
+        // Log session data for analytics and reflection
+        const session = {
+            date: new Date().toISOString(),
+            duration: this.getWorkDuration() / 60, // in minutes
+            subject: document.getElementById('currentSubject')?.value || 'General',
+            pauseCount: this.pauseCount,
+            totalPauseTime: this.totalPauseTime,
+            sessionNumber: this.sessionCount
+        };
+        
+        const sessionHistory = JSON.parse(localStorage.getItem('session_history')) || [];
+        sessionHistory.push(session);
+        
+        // Keep only last 100 sessions
+        if (sessionHistory.length > 100) {
+            sessionHistory.splice(0, sessionHistory.length - 100);
+        }
+        
+        localStorage.setItem('session_history', JSON.stringify(sessionHistory));
     }
 
     showReward() {
