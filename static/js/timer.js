@@ -88,6 +88,11 @@ class PomodoroTimer {
             this.workDurationInput.disabled = true;
             this.breakDurationInput.disabled = true;
 
+            // Show motivational quote when starting a new work session
+            if (this.isWorkMode && window.quotesManager) {
+                window.quotesManager.showSessionStartQuote();
+            }
+
             // Enable focus mode and set reminders when starting work session
             if (this.isWorkMode) {
                 notificationManager.blockNotifications();
