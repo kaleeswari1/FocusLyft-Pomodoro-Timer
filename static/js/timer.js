@@ -185,6 +185,11 @@ class PomodoroTimer {
                 const currentSubject = document.getElementById('currentSubject')?.value || 'General';
                 window.customAchievements.onSessionComplete(currentSubject);
             }
+            
+            // Notify study buddy
+            if (window.studyBuddy) {
+                window.studyBuddy.onSessionComplete();
+            }
 
             this.currentTime = this.breakTime;
             this.isWorkMode = false;

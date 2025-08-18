@@ -653,3 +653,170 @@ button:focus {
         margin: 0 20px;
     }
 }
+
+/* Focus Zones Styles */
+.focus-zone-option {
+    padding: 20px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.focus-zone-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background: rgba(248, 249, 250, 0.8);
+}
+
+.focus-zone-option.active {
+    border-color: var(--bs-primary);
+    background: rgba(13, 110, 253, 0.1);
+    transform: translateY(-2px);
+}
+
+.zone-icon {
+    margin-bottom: 10px;
+}
+
+.zone-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.zone-description {
+    margin-bottom: 12px;
+    min-height: 40px;
+}
+
+.zone-timing .badge {
+    margin: 0 3px;
+}
+
+/* Study Buddy Styles */
+.mate-avatar {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(13, 110, 253, 0.1);
+    border-radius: 50%;
+}
+
+.mate-avatar-large {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.mate-message {
+    border-left: 4px solid var(--bs-info);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.mate-option {
+    padding: 20px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.mate-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mate-option.selected {
+    border-color: var(--bs-success);
+    background: rgba(25, 135, 84, 0.1);
+}
+
+/* Environment Sounds Styles */
+.soundscape-option {
+    padding: 20px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.soundscape-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background: rgba(248, 249, 250, 0.8);
+}
+
+.soundscape-option.active {
+    border-color: var(--bs-warning);
+    background: rgba(255, 193, 7, 0.1);
+    transform: translateY(-2px);
+}
+
+.soundscape-option.active .sound-icon {
+    animation: soundPulse 2s infinite;
+}
+
+@keyframes soundPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.sound-icon {
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.sound-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.sound-description {
+    margin-bottom: 12px;
+    min-height: 40px;
+}
+
+/* Volume slider styling */
+.form-range {
+    accent-color: var(--bs-primary);
+}
+
+/* Zone customizer styles */
+#zoneEditList .list-group-item.active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.form-control-color {
+    width: 60px;
+    height: 40px;
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 576px) {
+    .focus-zone-option,
+    .soundscape-option,
+    .mate-option {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .mate-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 2rem;
+    }
+    
+    .zone-description,
+    .sound-description {
+        min-height: auto;
+    }
+}

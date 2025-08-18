@@ -23,6 +23,9 @@ Preferred communication style: Simple, everyday language.
   - `reflection.js`: Study reflection journal and distraction tracking
   - `achievements.js`: Custom achievement paths and goal setting
   - `knowledge.js`: Mini knowledge reminders during breaks
+  - `focus-zones.js`: Customizable study environments and timer presets
+  - `study-buddy.js`: Virtual study companions and group features
+  - `environment-sounds.js`: Ambient soundscapes for enhanced focus
 
 ## Backend Architecture
 - **Framework**: Flask (Python) serving as a minimal web server
@@ -94,6 +97,27 @@ Preferred communication style: Simple, everyday language.
 - **Save Feature**: Bookmark useful reminders for later review
 - **Smart Rotation**: Avoids repetition by tracking recently shown content
 - **Multi-Subject Support**: Mathematics, Science, History, English, Languages, and General study tips
+
+## Focus Zones System
+- **Preset Environments**: Deep Work, Balanced Study, Creative Flow, Review & Practice, Exam Preparation
+- **Custom Zone Creation**: Personalized timer settings, visual themes, and behavioral modifications
+- **Environment Adaptation**: Each zone adjusts quotes, distraction sensitivity, and celebration styles
+- **Timer Integration**: Automatic application of zone-specific work/break durations
+- **Visual Customization**: Custom icons, colors, and descriptions for each zone
+
+## Virtual Study Buddy System
+- **AI Companions**: Four unique personalities - Alex (Encouraging), Maya (Analytical), Zoe (Creative), Kai (Motivational)
+- **Personality-Based Interactions**: Each buddy provides subject-specific advice and encouragement
+- **Progress Celebration**: Personalized congratulations and achievement recognition
+- **Study Groups**: Create and join virtual study groups for accountability
+- **Dynamic Advice**: Context-aware tips based on current subject and study patterns
+
+## Environment Sounds System
+- **Ambient Soundscapes**: Rain, Forest, Coffee Shop, Ocean Waves, White Noise, Library
+- **Web Audio Generation**: Real-time sound synthesis using Web Audio API
+- **Volume Control**: Adjustable intensity with visual feedback
+- **Focus Integration**: Auto-start preferred sounds during work sessions
+- **Break Adaptation**: Volume adjustment during break periods for optimal relaxation
 
 # External Dependencies
 
