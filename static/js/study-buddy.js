@@ -114,9 +114,9 @@ class StudyBuddy {
                                 <i class="fas fa-sync me-1"></i>Change
                             </button>
                         </div>
-                        <div class="mate-message p-3 rounded bg-light" id="mateMessage">
+                        <div class="mate-message p-3 rounded" id="mateMessage" style="background-color: white; border: 1px solid #dee2e6;">
                             <i class="fas fa-quote-left text-muted me-2"></i>
-                            <span id="mateQuote">Ready to focus? Let's achieve something great today!</span>
+                            <span id="mateQuote" style="color: #333; font-weight: 500;">Ready to focus? Let's achieve something great today!</span>
                         </div>
                         <div class="mt-3">
                             <button class="btn btn-outline-info btn-sm me-2" id="getMateAdviceBtn">
@@ -367,14 +367,22 @@ class StudyBuddy {
         
         if (mateQuoteEl) {
             mateQuoteEl.textContent = advice;
-            console.log('Maya advice updated:', advice); // Debug log
+            mateQuoteEl.style.opacity = '0';
+            setTimeout(() => {
+                mateQuoteEl.style.opacity = '1';
+            }, 100);
+            console.log('Maya advice updated:', advice);
         } else {
             console.error('mateQuote element not found!');
         }
         
-        // Add a subtle animation
+        // Force a visual refresh and animation
         if (messageEl) {
             messageEl.style.transition = 'all 0.3s ease';
+            messageEl.style.backgroundColor = '#f8f9fa';
+            messageEl.style.padding = '15px';
+            messageEl.style.border = '1px solid #dee2e6';
+            messageEl.style.borderRadius = '8px';
             messageEl.style.transform = 'scale(0.98)';
             setTimeout(() => {
                 messageEl.style.transform = 'scale(1)';
