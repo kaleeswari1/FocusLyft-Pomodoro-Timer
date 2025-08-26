@@ -108,9 +108,11 @@ Preferred communication style: Simple, everyday language.
 ## Virtual Study Buddy System
 - **AI Companions**: Four unique personalities - Alex (Encouraging), Maya (Analytical), Zoe (Creative), Kai (Motivational)
 - **Personality-Based Interactions**: Each buddy provides subject-specific advice and encouragement
+- **Maya's Analytical Features**: Enhanced with detailed subject-specific advice for Math, Science, History, English, and Languages
 - **Progress Celebration**: Personalized congratulations and achievement recognition
 - **Study Groups**: Create and join virtual study groups for accountability
 - **Dynamic Advice**: Context-aware tips based on current subject and study patterns
+- **Visual Message Display**: Fixed white message box display with proper styling and animations
 
 
 
