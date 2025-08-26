@@ -737,57 +737,7 @@ button:focus {
     background: rgba(25, 135, 84, 0.1);
 }
 
-/* Environment Sounds Styles */
-.soundscape-option {
-    padding: 20px;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: rgba(248, 249, 250, 0.5);
-}
 
-.soundscape-option:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    background: rgba(248, 249, 250, 0.8);
-}
-
-.soundscape-option.active {
-    border-color: var(--bs-warning);
-    background: rgba(255, 193, 7, 0.1);
-    transform: translateY(-2px);
-}
-
-.soundscape-option.active .sound-icon {
-    animation: soundPulse 2s infinite;
-}
-
-@keyframes soundPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-.sound-icon {
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
-}
-
-.sound-name {
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.sound-description {
-    margin-bottom: 12px;
-    min-height: 40px;
-}
-
-/* Volume slider styling */
-.form-range {
-    accent-color: var(--bs-primary);
-}
 
 /* Zone customizer styles */
 #zoneEditList .list-group-item.active {
@@ -803,7 +753,6 @@ button:focus {
 /* Additional responsive adjustments */
 @media (max-width: 576px) {
     .focus-zone-option,
-    .soundscape-option,
     .mate-option {
         padding: 15px;
         margin-bottom: 15px;
@@ -815,8 +764,7 @@ button:focus {
         font-size: 2rem;
     }
     
-    .zone-description,
-    .sound-description {
+    .zone-description {
         min-height: auto;
     }
 }

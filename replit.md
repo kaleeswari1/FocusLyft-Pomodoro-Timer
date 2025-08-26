@@ -25,7 +25,7 @@ Preferred communication style: Simple, everyday language.
   - `knowledge.js`: Mini knowledge reminders during breaks
   - `focus-zones.js`: Customizable study environments and timer presets
   - `study-buddy.js`: Virtual study companions and group features
-  - `environment-sounds.js`: Ambient soundscapes for enhanced focus
+
 
 ## Backend Architecture
 - **Framework**: Flask (Python) serving as a minimal web server
@@ -112,12 +112,7 @@ Preferred communication style: Simple, everyday language.
 - **Study Groups**: Create and join virtual study groups for accountability
 - **Dynamic Advice**: Context-aware tips based on current subject and study patterns
 
-## Environment Sounds System
-- **Ambient Soundscapes**: Rain, Forest, Coffee Shop, Ocean Waves, White Noise, Library
-- **Web Audio Generation**: Real-time sound synthesis using Web Audio API
-- **Volume Control**: Adjustable intensity with visual feedback
-- **Focus Integration**: Auto-start preferred sounds during work sessions
-- **Break Adaptation**: Volume adjustment during break periods for optimal relaxation
+
 
 # External Dependencies
 
