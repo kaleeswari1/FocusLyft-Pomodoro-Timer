@@ -146,42 +146,74 @@ class StudyBuddy {
             </div>
         `;
 
-        // Insert after focus zones
-        const focusZonesCard = document.querySelector('.card');
-        focusZonesCard.insertAdjacentHTML('afterend', buddyHTML);
+        // Find the Focus Zone card by looking for the specific text content
+        const allCards = document.querySelectorAll('.card');
+        let focusZonesCard = null;
+        
+        allCards.forEach(card => {
+            const cardTitle = card.querySelector('.card-title');
+            if (cardTitle && cardTitle.textContent.includes('Focus Zone')) {
+                focusZonesCard = card;
+            }
+        });
+        
+        if (focusZonesCard) {
+            focusZonesCard.insertAdjacentHTML('afterend', buddyHTML);
+        } else {
+            // Fallback: insert before the last card (which should be task management)
+            const container = document.querySelector('.container');
+            const lastCard = container.querySelector('.card:last-of-type');
+            if (lastCard) {
+                lastCard.insertAdjacentHTML('beforebegin', buddyHTML);
+            } else {
+                // Ultimate fallback: append to container
+                container.insertAdjacentHTML('beforeend', buddyHTML);
+            }
+        }
 
         this.setupBuddyEvents();
         this.updateVirtualMateDisplay();
     }
 
     setupBuddyEvents() {
-        document.getElementById('virtualMateBtn').addEventListener('click', () => {
-            this.showVirtualMateSection();
-        });
+        // Add small delay to ensure DOM elements are ready
+        setTimeout(() => {
+            const virtualMateBtn = document.getElementById('virtualMateBtn');
+            const studyGroupBtn = document.getElementById('studyGroupBtn');
+            const changeMateBtn = document.getElementById('changeMateBtn');
+            const getMateAdviceBtn = document.getElementById('getMateAdviceBtn');
+            const shareProgressBtn = document.getElementById('shareProgressBtn');
+            const createGroupBtn = document.getElementById('createGroupBtn');
+            const joinGroupBtn = document.getElementById('joinGroupBtn');
 
-        document.getElementById('studyGroupBtn').addEventListener('click', () => {
-            this.showStudyGroupSection();
-        });
+            if (virtualMateBtn) virtualMateBtn.addEventListener('click', () => {
+                this.showVirtualMateSection();
+            });
 
-        document.getElementById('changeMateBtn').addEventListener('click', () => {
-            this.showMateSelector();
-        });
+            if (studyGroupBtn) studyGroupBtn.addEventListener('click', () => {
+                this.showStudyGroupSection();
+            });
 
-        document.getElementById('getMateAdviceBtn').addEventListener('click', () => {
-            this.getMateAdvice();
-        });
+            if (changeMateBtn) changeMateBtn.addEventListener('click', () => {
+                this.showMateSelector();
+            });
 
-        document.getElementById('shareProgressBtn').addEventListener('click', () => {
-            this.shareProgress();
-        });
+            if (getMateAdviceBtn) getMateAdviceBtn.addEventListener('click', () => {
+                this.getMateAdvice();
+            });
 
-        document.getElementById('createGroupBtn').addEventListener('click', () => {
-            this.createStudyGroup();
-        });
+            if (shareProgressBtn) shareProgressBtn.addEventListener('click', () => {
+                this.shareProgress();
+            });
 
-        document.getElementById('joinGroupBtn').addEventListener('click', () => {
-            this.joinStudyGroup();
-        });
+            if (createGroupBtn) createGroupBtn.addEventListener('click', () => {
+                this.createStudyGroup();
+            });
+
+            if (joinGroupBtn) joinGroupBtn.addEventListener('click', () => {
+                this.joinStudyGroup();
+            });
+        }, 100);
     }
 
     showVirtualMateSection() {
@@ -212,13 +244,23 @@ class StudyBuddy {
         const mate = this.virtualMates[this.currentMate];
         if (!mate) return;
 
-        document.getElementById('mateAvatar').textContent = mate.avatar;
-        document.getElementById('mateName').textContent = mate.name;
-        document.getElementById('mateSpecialty').textContent = mate.specialty;
-        
-        // Show a random quote
-        const randomQuote = mate.quotes[Math.floor(Math.random() * mate.quotes.length)];
-        document.getElementById('mateQuote').textContent = randomQuote;
+        // Add delay to ensure DOM elements exist
+        setTimeout(() => {
+            const mateAvatar = document.getElementById('mateAvatar');
+            const mateName = document.getElementById('mateName');
+            const mateSpecialty = document.getElementById('mateSpecialty');
+            const mateQuote = document.getElementById('mateQuote');
+
+            if (mateAvatar) mateAvatar.textContent = mate.avatar;
+            if (mateName) mateName.textContent = mate.name;
+            if (mateSpecialty) mateSpecialty.textContent = mate.specialty;
+            
+            // Show a random quote
+            if (mateQuote) {
+                const randomQuote = mate.quotes[Math.floor(Math.random() * mate.quotes.length)];
+                mateQuote.textContent = randomQuote;
+            }
+        }, 50);
     }
 
     showMateSelector() {
@@ -267,49 +309,77 @@ class StudyBuddy {
         // Get subject-specific or general advice
         let advice = mate.quotes[Math.floor(Math.random() * mate.quotes.length)];
         
-        // Add some subject-specific advice
+        // Add some subject-specific advice based on Maya's analytical personality
         const subjectAdvice = {
             'Mathematics': [
-                "Practice makes perfect with math. Work through problems step by step.",
-                "If you're stuck, try working backwards from the answer.",
-                "Draw diagrams when possible - visualization helps with understanding."
+                "Break down complex problems into smaller, manageable steps.",
+                "Practice visualization - draw graphs and diagrams to understand relationships.",
+                "Check your work by substituting answers back into original equations.",
+                "Look for patterns in problem types to build your problem-solving toolkit."
             ],
             'Science': [
-                "Understand the 'why' behind formulas, not just the 'how'.",
-                "Connect new concepts to things you already know.",
-                "Make predictions before experiments to engage your thinking."
+                "Start with fundamental principles and build up to complex concepts.",
+                "Make connections between different scientific fields - they're all related.",
+                "Question everything and form hypotheses before looking up answers.",
+                "Use the scientific method: observe, hypothesize, test, analyze, conclude."
             ],
             'History': [
-                "Create timelines to see cause and effect relationships.",
-                "Think about how historical events connect to today.",
-                "Use memory techniques like acronyms for important dates."
+                "Analyze cause and effect relationships - why did events happen?",
+                "Compare different historical periods to identify patterns.",
+                "Consider multiple perspectives on the same historical event.",
+                "Create detailed timelines to visualize chronological relationships."
             ],
             'English': [
-                "Read your work aloud to catch errors and improve flow.",
-                "Keep a vocabulary journal for new words you encounter.",
-                "Practice writing in different styles to improve versatility."
+                "Analyze the structure of well-written texts to improve your own writing.",
+                "Keep track of new vocabulary with context and example sentences.",
+                "Read diverse genres to understand different writing styles and techniques.",
+                "Practice critical thinking by questioning authors' arguments and evidence."
             ],
             'Languages': [
-                "Immerse yourself - change your phone to the target language!",
-                "Practice speaking daily, even if it's just to yourself.",
-                "Don't fear mistakes - they're part of the learning process."
+                "Analyze grammar patterns systematically rather than memorizing randomly.",
+                "Use spaced repetition to optimize your vocabulary retention.",
+                "Practice with native speakers to get real-time feedback on your progress.",
+                "Set measurable goals and track your improvement metrics regularly."
             ]
         };
 
-        if (subjectAdvice[currentSubject]) {
+        // Use subject-specific advice if Maya is selected and subject matches
+        if (this.currentMate === 'maya' && subjectAdvice[currentSubject]) {
             const subjectTips = subjectAdvice[currentSubject];
             advice = subjectTips[Math.floor(Math.random() * subjectTips.length)];
+        } else if (subjectAdvice[currentSubject]) {
+            // Use general subject advice for other mates
+            const generalAdvice = {
+                'Mathematics': ["Practice makes perfect with math. Work through problems step by step."],
+                'Science': ["Understand the 'why' behind formulas, not just the 'how'."],
+                'History': ["Create timelines to see cause and effect relationships."],
+                'English': ["Read your work aloud to catch errors and improve flow."],
+                'Languages': ["Practice speaking daily, even if it's just to yourself."]
+            };
+            if (generalAdvice[currentSubject]) {
+                advice = generalAdvice[currentSubject][0];
+            }
         }
 
-        // Update the display
-        document.getElementById('mateQuote').textContent = advice;
+        // Update the display with error checking
+        const mateQuoteEl = document.getElementById('mateQuote');
+        const messageEl = document.getElementById('mateMessage');
+        
+        if (mateQuoteEl) {
+            mateQuoteEl.textContent = advice;
+            console.log('Maya advice updated:', advice); // Debug log
+        } else {
+            console.error('mateQuote element not found!');
+        }
         
         // Add a subtle animation
-        const messageEl = document.getElementById('mateMessage');
-        messageEl.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            messageEl.style.transform = 'scale(1)';
-        }, 100);
+        if (messageEl) {
+            messageEl.style.transition = 'all 0.3s ease';
+            messageEl.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                messageEl.style.transform = 'scale(1)';
+            }, 150);
+        }
     }
 
     shareProgress() {
@@ -495,7 +565,10 @@ class StudyBuddy {
     }
 }
 
-// Initialize study buddy when page loads
+// Initialize study buddy when page loads with proper timing
 document.addEventListener('DOMContentLoaded', () => {
-    window.studyBuddy = new StudyBuddy();
+    // Add delay to ensure all other components have loaded first
+    setTimeout(() => {
+        window.studyBuddy = new StudyBuddy();
+    }, 500);
 });
