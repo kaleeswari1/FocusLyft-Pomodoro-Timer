@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer</title>
+    <title>FocusLyft — Pomodoro Timer</title>
     <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
+    <!-- Top Nav Bar -->
+    <nav class="navbar navbar-dark bg-dark border-bottom border-secondary px-4 py-2">
+        <span class="navbar-brand fw-bold"><i class="fas fa-brain text-primary me-2"></i>FocusLyft</span>
+        <div class="d-flex align-items-center gap-2">
+            <span id="headerUserBadge" class="badge bg-secondary d-none fs-6"></span>
+            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#authModal">
+                <i class="fas fa-user-circle me-1"></i> Account
+            </button>
+        </div>
+    </nav>
+
     <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center py-4">
         <div class="text-center mb-4 w-100">
-            <h1 class="display-4 mb-3">Pomodoro Timer</h1>
 
             <!-- Exam Notification Area -->
             <div id="examNotification" class="mb-4"></div>
@@ -57,12 +69,10 @@
                 <div id="progressBar" class="progress-bar" role="progressbar" style="width: 100%"></div>
             </div>
 
-            <!-- Add pause statistics display -->
             <div id="pauseStats" class="mb-3"></div>
 
             <div class="session-counter mb-3">
                 Session: <span id="sessionCount">0</span>
-                <!-- Add reward message container -->
                 <div id="rewardMessage" class="reward-message mt-2"></div>
             </div>
 
@@ -70,6 +80,70 @@
                 <button id="startBtn" class="btn btn-success btn-lg me-2">Start</button>
                 <button id="pauseBtn" class="btn btn-warning btn-lg me-2" disabled>Pause</button>
                 <button id="resetBtn" class="btn btn-danger btn-lg">Reset</button>
+            </div>
+
+            <!-- ===================== ANALYTICS CARD ===================== -->
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0"><i class="fas fa-chart-bar text-primary me-2"></i>Productivity Analytics</h5>
+                    <button class="btn btn-sm btn-outline-secondary" id="analyticsTabBtn" onclick="window.analyticsManager && window.analyticsManager.refreshAll()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+                <div class="card-body" id="analyticsPanel">
+                    <!-- Daily Report Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-stat-box text-center p-3 rounded border border-secondary">
+                                <div class="fs-1 fw-bold text-primary" id="dailySessionCount">0</div>
+                                <div class="text-muted small">Sessions Today</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-stat-box text-center p-3 rounded border border-secondary">
+                                <div class="fs-1 fw-bold text-success" id="dailyFocusMinutes">0</div>
+                                <div class="text-muted small">Focus Minutes</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-stat-box text-center p-3 rounded border border-secondary">
+                                <div class="fs-1 fw-bold text-warning" id="dailyScore">0%</div>
+                                <div class="text-muted small">Daily Score</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-stat-box text-center p-3 rounded border border-secondary">
+                                <div class="fs-4 fw-bold text-info" id="topSubjectToday">—</div>
+                                <div class="text-muted small">Top Subject</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Score Bar -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">Daily Productivity Score</small>
+                            <small class="text-muted" id="dailyScore2"></small>
+                        </div>
+                        <div class="progress" style="height:12px;">
+                            <div id="dailyScoreBar" class="progress-bar bg-success" style="width:0%;border-radius:6px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Chart -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="text-muted mb-0">7-Day Focus History</h6>
+                            <span class="badge bg-primary">Weekly Score: <strong id="weeklyScore">—</strong></span>
+                        </div>
+                        <canvas id="weeklyChart" height="120"></canvas>
+                    </div>
+
+                    <div class="text-muted small text-center mt-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Data from this device. <span id="cloudSyncNote">Log in to sync across devices.</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Task Management Section -->
@@ -101,9 +175,7 @@
                         </div>
                     </form>
                     <div class="task-container">
-                        <ul id="taskList" class="list-group">
-                            <!-- Task items will be added here dynamically -->
-                        </ul>
+                        <ul id="taskList" class="list-group"></ul>
                     </div>
                 </div>
             </div>
@@ -127,21 +199,16 @@
                             </div>
                         </div>
                     </form>
-                    <ul id="examList" class="list-group">
-                        <!-- Exam items will be added here dynamically -->
-                    </ul>
+                    <ul id="examList" class="list-group"></ul>
                 </div>
             </div>
 
-
-
-            <!-- Enhanced Reminders Section -->
+            <!-- Smart Reminders Section -->
             <div class="card mt-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Smart Reminders</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Health & Wellness Reminders -->
                     <div class="row mb-4">
                         <div class="col-12">
                             <h6 class="text-muted mb-3">Health & Wellness</h6>
@@ -172,7 +239,6 @@
                         </div>
                     </div>
 
-                    <!-- Daily Study Reminder -->
                     <div class="row mb-4">
                         <div class="col-12">
                             <h6 class="text-muted mb-3">Daily Study Schedule</h6>
@@ -186,7 +252,6 @@
                         </div>
                     </div>
 
-                    <!-- Custom Reminders -->
                     <div class="row mb-3">
                         <div class="col-12">
                             <h6 class="text-muted mb-3">Custom Reminders</h6>
@@ -205,7 +270,6 @@
                         </div>
                     </div>
 
-                    <!-- Active Reminders Display -->
                     <div class="row">
                         <div class="col-12">
                             <h6 class="text-muted mb-3">Active Reminders</h6>
@@ -222,7 +286,98 @@
         </div>
     </div>
 
+    <!-- ===================== AUTH MODAL ===================== -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="authModalLabel"><i class="fas fa-user-circle me-2 text-primary"></i>Student Account</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
 
+                    <!-- LOGGED OUT STATE -->
+                    <div id="authLoggedOut">
+                        <!-- Login Form -->
+                        <div id="loginForm">
+                            <h6 class="text-muted mb-3">Log in to sync your focus history</h6>
+                            <form onsubmit="return false;">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="loginUsername" placeholder="Username" autocomplete="username">
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Password" autocomplete="current-password">
+                            </div>
+                            <div id="loginAuthMsg" class="d-none"></div>
+                            <button class="btn btn-primary w-100 mb-2" id="authLoginBtn" type="button">
+                                <i class="fas fa-sign-in-alt me-1"></i> Log In
+                            </button>
+                            </form>
+                            <div class="text-center text-muted small">
+                                No account? <a href="#" id="showRegisterLink" class="text-primary">Register free</a>
+                            </div>
+                        </div>
+
+                        <!-- Register Form -->
+                        <div id="registerForm" class="d-none">
+                            <h6 class="text-muted mb-3">Create your free student account</h6>
+                            <form onsubmit="return false;">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="regUsername" placeholder="Username" autocomplete="username">
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" id="regEmail" placeholder="Email" autocomplete="email">
+                            </div>
+                            <div class="mb-3">
+                                <input type="password" class="form-control" id="regPassword" placeholder="Password (min 6 chars)" autocomplete="new-password">
+                            </div>
+                            <div id="regAuthMsg" class="d-none"></div>
+                            <button class="btn btn-success w-100 mb-2" id="authRegisterBtn" type="button">
+                                <i class="fas fa-user-plus me-1"></i> Create Account
+                            </button>
+                            </form>
+                            <div class="text-center text-muted small">
+                                Already have an account? <a href="#" id="showLoginLink" class="text-primary">Log in</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LOGGED IN STATE -->
+                    <div id="authLoggedIn" class="d-none">
+                        <div class="text-center mb-4">
+                            <div class="fs-1 text-success"><i class="fas fa-check-circle"></i></div>
+                            <h5 class="mt-2">Welcome, <span id="loggedInUsername" class="text-primary"></span>!</h5>
+                            <p class="text-muted small">Your study sessions are being saved to your account.</p>
+                        </div>
+
+                        <!-- QR Login Section -->
+                        <div class="border border-secondary rounded p-3 mb-3">
+                            <h6 class="text-muted mb-2"><i class="fas fa-qrcode text-primary me-1"></i> Quick Login QR Code</h6>
+                            <p class="text-muted small mb-3">Generate a QR code to instantly log in on another device. Valid for 10 minutes.</p>
+                            <button class="btn btn-outline-primary btn-sm w-100 mb-3" id="generateQRBtn">
+                                <i class="fas fa-qrcode me-1"></i> Generate QR Code
+                            </button>
+                            <div id="qrSection" class="d-none text-center">
+                                <div id="qrCodeContainer" class="d-inline-block p-2 bg-dark rounded border border-secondary mb-2"></div>
+                                <p class="text-muted small mb-1" id="qrExpiry"></p>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">URL</span>
+                                    <input type="text" class="form-control text-truncate" id="qrLoginUrl" readonly>
+                                    <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('qrLoginUrl').value)">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-danger w-100 btn-sm" id="authLogoutBtn">
+                            <i class="fas fa-sign-out-alt me-1"></i> Log Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
@@ -232,10 +387,18 @@
     <script src="{{ url_for('static', filename='js/knowledge.js') }}"></script>
     <script src="{{ url_for('static', filename='js/focus-zones.js') }}"></script>
     <script src="{{ url_for('static', filename='js/study-buddy.js') }}"></script>
-
     <script src="{{ url_for('static', filename='js/exams.js') }}"></script>
     <script src="{{ url_for('static', filename='js/todo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/timer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/rewards.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.analyticsManager) window.analyticsManager.init();
+            }, 300);
+        });
+    </script>
 </body>
 </html>

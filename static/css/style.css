@@ -3,6 +3,25 @@
     font-weight: bold;
 }
 
+/* Analytics */
+.analytics-stat-box {
+    background: rgba(255,255,255,0.04);
+    transition: background 0.2s;
+}
+.analytics-stat-box:hover {
+    background: rgba(255,255,255,0.08);
+}
+#weeklyChart {
+    max-height: 220px;
+}
+
+/* Navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
 .progress {
     width: 300px;
     margin: 0 auto;

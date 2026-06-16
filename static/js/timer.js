@@ -215,11 +215,12 @@ class PomodoroTimer {
     }
     
     logSession() {
-        // Log session data for analytics and reflection
+        const subject = document.getElementById('currentSubject')?.value || 'General';
+        const durationMinutes = Math.round(this.getWorkDuration() / 60);
         const session = {
             date: new Date().toISOString(),
-            duration: this.getWorkDuration() / 60, // in minutes
-            subject: document.getElementById('currentSubject')?.value || 'General',
+            duration: durationMinutes,
+            subject: subject,
             pauseCount: this.pauseCount,
             totalPauseTime: this.totalPauseTime,
             sessionNumber: this.sessionCount
@@ -228,12 +229,21 @@ class PomodoroTimer {
         const sessionHistory = JSON.parse(localStorage.getItem('session_history')) || [];
         sessionHistory.push(session);
         
-        // Keep only last 100 sessions
-        if (sessionHistory.length > 100) {
-            sessionHistory.splice(0, sessionHistory.length - 100);
+        if (sessionHistory.length > 200) {
+            sessionHistory.splice(0, sessionHistory.length - 200);
         }
         
         localStorage.setItem('session_history', JSON.stringify(sessionHistory));
+
+        // Sync to backend if logged in
+        if (window.authManager) {
+            window.authManager.syncSessionToBackend({ subject, duration: durationMinutes });
+        }
+
+        // Refresh analytics display
+        if (window.analyticsManager) {
+            window.analyticsManager.renderDailyReport();
+        }
     }
 
     showReward() {

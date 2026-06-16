@@ -1,0 +1,1 @@
+- [New features: Auth, Analytics, QR Login](feature-additions.md) — DB-backed student accounts, weekly analytics chart, QR one-time login tokens added Jun 2026.
