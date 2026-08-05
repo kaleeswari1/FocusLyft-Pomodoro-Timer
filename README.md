@@ -6,7 +6,7 @@ A full-featured Pomodoro Timer web application built with **Flask** and **vanill
 
 ## 🌐 Live Demo
 
-👉 [focuslyft.replit.app]([https://focuslyft.replit.app](https://focus-lyft-pomodoro-timer--shanmugarajsmra.replit.app/)) 
+👉 [focuslyft.replit.app](https://focus-lyft-pomodoro-timer--shanmugarajsmra.replit.app/)
 
 ---
 
